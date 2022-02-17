@@ -8,6 +8,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@fontsource/roboto": "^4.5.3",
+    "@mui/material": "^5.4.2",
     "next": "12.0.10",
     "normalize.css": "^8.0.1",
     "react": "17.0.2",

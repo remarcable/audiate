@@ -21,6 +21,7 @@ const ProgressBar = ({ progress, audioDuration, markers, onClick }) => {
   return (
     <Box
       mt={2}
+      pb={3}
       sx={{
         display: "flex",
         flexDirection: "column",

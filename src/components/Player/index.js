@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import ReactPlayer from "react-player";
-import { Paper, Typography, Button } from "@mui/material";
+import { Box, Paper, Typography, Button } from "@mui/material";
 
 import ProgressBar from "components/ProgressBar";
 
@@ -24,7 +24,14 @@ export default function Player({ file }) {
 
   return (
     <Paper sx={{ mt: 2, p: 2 }} variant="outline">
-      <Typography variant="h6">{file.name}</Typography>
+      <Box sx={{ display: "flex" }}>
+        <Typography variant="h6">{file.name}</Typography>
+        <Box ml={1}>
+          <Button onClick={() => setPlaying(!playing)}>
+            {playing ? "Pause" : "Play"}
+          </Button>
+        </Box>
+      </Box>
 
       <ReactPlayer
         url={fileUrl}
@@ -35,15 +42,12 @@ export default function Player({ file }) {
         onProgress={({ played }) => setProgress(played)}
         onDuration={(duration) => setDuration(duration)}
         progressInterval={100}
-        width={500}
-        height={55}
+        width={0}
+        height={0}
         controls
         config={{ file: { forceAudio: true } }}
         ref={playerRef}
       />
-      <Button onClick={() => setPlaying(!playing)}>
-        {playing ? "Pause" : "Play"}
-      </Button>
 
       <ProgressBar
         progress={progress}

@@ -5,7 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { Container, Typography, Paper } from "@mui/material";
 import Player from "components/Player";
 
-export default function Home() {
+export default function App() {
   const onDrop = useCallback(([audioFile]) => {
     if (!audioFile) return;
 

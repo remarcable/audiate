@@ -3,7 +3,10 @@ import { Box } from "@mui/material";
 
 import { useBoundingClientRect } from "hooks/useBoundingClientRect";
 
-const ProgressBar = ({ progress, onClick }) => {
+import ProgressText from "./ProgressText";
+import Marker from "./Marker";
+
+const ProgressBar = ({ progress, audioDuration, markers, onClick }) => {
   const ref = useRef(null);
   const boundingClientRect = useBoundingClientRect(ref);
 
@@ -18,14 +21,38 @@ const ProgressBar = ({ progress, onClick }) => {
   return (
     <Box
       mt={2}
-      sx={{ backgroundColor: "primary.light", height: 40 }}
-      onClick={onElementClick}
-      ref={ref}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+      }}
     >
+      <ProgressText duration={audioDuration} progress={progress} />
       <Box
-        sx={{ backgroundColor: "primary.main", height: "100%" }}
-        width={`${(progress * 100).toFixed(2)}%`}
-      />
+        sx={{
+          backgroundColor: "primary.light",
+          height: 40,
+          position: "relative",
+        }}
+        onClick={onElementClick}
+        ref={ref}
+      >
+        <Box
+          sx={{
+            backgroundColor: "primary.main",
+            height: "100%",
+          }}
+          style={{ width: `${progress * 100}%` }}
+        />
+        {markers.map((relativePosition, i) => {
+          return (
+            <Marker
+              key={i}
+              audioDuration={audioDuration}
+              relativePosition={relativePosition}
+            />
+          );
+        })}
+      </Box>
     </Box>
   );
 };

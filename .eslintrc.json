@@ -1,8 +1,16 @@
 {
-  "plugins": ["prettier"],
+  "plugins": ["import", "prettier"],
   "extends": [
     "eslint:recommended",
     "next/core-web-vitals",
+    "plugin:import/recommended",
     "plugin:prettier/recommended"
-  ]
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": "src"
+      }
+    }
+  }
 }

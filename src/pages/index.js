@@ -2,7 +2,8 @@ import { useState, useCallback } from "react";
 import Head from "next/head";
 import { useDropzone } from "react-dropzone";
 
-import { Container, Button, Typography, Paper } from "@mui/material";
+import { Container, Typography, Paper } from "@mui/material";
+import Player from "components/Player";
 
 export default function Home() {
   const onDrop = useCallback(([audioFile]) => {
@@ -36,6 +37,7 @@ export default function Home() {
             alignItems: "center",
             color: "text.secondary",
             cursor: "pointer",
+            p: 2,
           }}
           variant="outlined"
         >
@@ -48,11 +50,7 @@ export default function Home() {
             </Typography>
           )}
         </Paper>
-        {file && (
-          <Typography variant="h3" gutterBottom>
-            {file.name}
-          </Typography>
-        )}
+        {file && <Player file={file} />}
       </Container>
     </>
   );

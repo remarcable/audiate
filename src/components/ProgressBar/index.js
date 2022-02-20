@@ -29,7 +29,7 @@ const ProgressBar = ({ progress, audioDuration, markers, onClick }) => {
       <ProgressText duration={audioDuration} progress={progress} />
       <Box
         sx={{
-          backgroundColor: "primary.light",
+          backgroundColor: "grey.200",
           height: 40,
           position: "relative",
           borderRadius: 1,
@@ -39,8 +39,10 @@ const ProgressBar = ({ progress, audioDuration, markers, onClick }) => {
       >
         <Box
           sx={{
-            backgroundColor: "primary.main",
+            backgroundColor: "primary.light",
             height: "100%",
+            borderTopLeftRadius: (theme) => theme.shape.borderRadius,
+            borderBottomLeftRadius: (theme) => theme.shape.borderRadius,
           }}
           style={{ width: `${progress * 100}%` }}
         />

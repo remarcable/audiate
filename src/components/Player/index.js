@@ -7,6 +7,7 @@ import { getMinutesSeconds } from "utils/getMinutesSeconds";
 import ProgressBar from "components/ProgressBar";
 import PlaybackMenu from "components/PlaybackMenu";
 import MarkerList from "components/MarkerList";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export default function Player({ file }) {
   const [playing, setPlaying] = useState(false);
@@ -17,9 +18,18 @@ export default function Player({ file }) {
   const [speed, setSpeed] = useState(1);
   const playerRef = useRef(null);
 
-  const addMarker = useCallback(
-    (relativeTime) => {
-      setMarkers((prevMarkers) => [...prevMarkers, relativeTime]);
+  const addMarker = useCallback(() => {
+    setMarkers((prevMarkers) => {
+      if (prevMarkers.includes(progress)) return prevMarkers;
+      return [...prevMarkers, progress];
+    });
+  }, [progress, setMarkers]);
+
+  const removeMarker = useCallback(
+    (markerProgress) => {
+      setMarkers((prevMarkers) =>
+        prevMarkers.filter((m) => m !== markerProgress)
+      );
     },
     [setMarkers]
   );
@@ -27,6 +37,16 @@ export default function Player({ file }) {
   const fileUrl = useMemo(() => {
     return URL.createObjectURL(file);
   }, [file]);
+
+  useHotkeys("k", () => setPlaying((prev) => !prev), [setPlaying]);
+  useHotkeys(
+    "space",
+    (e) => {
+      e.preventDefault();
+      addMarker();
+    },
+    [addMarker]
+  );
 
   return (
     <>
@@ -36,7 +56,6 @@ export default function Player({ file }) {
           <PlaybackMenu
             playing={playing}
             speed={speed}
-            progress={progress}
             setPlaying={setPlaying}
             setSpeed={setSpeed}
             addMarker={addMarker}
@@ -68,6 +87,7 @@ export default function Player({ file }) {
         />
       </Paper>
       <MarkerList
+        removeMarker={removeMarker}
         markers={markers
           .map((marker) => ({
             relativeTime: marker,

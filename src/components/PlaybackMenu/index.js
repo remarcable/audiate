@@ -4,14 +4,7 @@ import { Button, ButtonGroup, Menu, MenuItem } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const SPEED_OPTIONS = [0.5, 1, 1.5, 2];
-const PlaybackMenu = ({
-  speed,
-  progress,
-  playing,
-  setPlaying,
-  setSpeed,
-  addMarker,
-}) => {
+const PlaybackMenu = ({ speed, playing, setPlaying, setSpeed, addMarker }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleSpeedButtonClick = (e) => {
@@ -52,7 +45,7 @@ const PlaybackMenu = ({
           </MenuItem>
         ))}
       </Menu>
-      <Button onClick={() => addMarker(progress)}>Set Marker</Button>
+      <Button onClick={() => addMarker()}>Set Marker</Button>
     </ButtonGroup>
   );
 };

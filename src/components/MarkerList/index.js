@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@mui/material";
 
-const MarkerList = ({ markers }) => (
+const MarkerList = ({ markers, removeMarker }) => (
   <Box mt={3}>
     <TableContainer
       component={Paper}
@@ -34,7 +34,9 @@ const MarkerList = ({ markers }) => (
                 {minutes}:{seconds} ({relativeTime.toFixed(3)})
               </TableCell>
               <TableCell component="th" scope="row">
-                <Button>Remove</Button>
+                <Button onClick={() => removeMarker(relativeTime)}>
+                  Remove
+                </Button>
               </TableCell>
             </TableRow>
           ))}

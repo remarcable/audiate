@@ -1,14 +1,17 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import ReactPlayer from "react-player";
-import { Box, Paper, Typography, Button } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 
 import ProgressBar from "components/ProgressBar";
+import PlaybackMenu from "components/PlaybackMenu";
 
 export default function Player({ file }) {
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [markers, setMarkers] = useState([]);
+
+  const [speed, setSpeed] = useState(1);
   const playerRef = useRef(null);
 
   const addMarker = useCallback(
@@ -26,11 +29,14 @@ export default function Player({ file }) {
     <Paper sx={{ mt: 2, p: 2 }} variant="outline">
       <Box sx={{ display: "flex" }}>
         <Typography variant="h6">{file.name}</Typography>
-        <Box ml={1}>
-          <Button onClick={() => setPlaying(!playing)}>
-            {playing ? "Pause" : "Play"}
-          </Button>
-        </Box>
+        <PlaybackMenu
+          playing={playing}
+          speed={speed}
+          progress={progress}
+          setPlaying={setPlaying}
+          setSpeed={setSpeed}
+          addMarker={addMarker}
+        />
       </Box>
 
       <ReactPlayer
@@ -45,6 +51,7 @@ export default function Player({ file }) {
         width={0}
         height={0}
         controls
+        playbackRate={speed}
         config={{ file: { forceAudio: true } }}
         ref={playerRef}
       />
@@ -53,7 +60,7 @@ export default function Player({ file }) {
         progress={progress}
         audioDuration={duration}
         markers={markers}
-        onClick={(clickedAt) => addMarker(clickedAt)}
+        onClick={(clickedAt) => playerRef.current.seekTo(clickedAt)}
       />
     </Paper>
   );

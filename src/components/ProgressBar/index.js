@@ -32,6 +32,7 @@ const ProgressBar = ({ progress, audioDuration, markers, onClick }) => {
           backgroundColor: "primary.light",
           height: 40,
           position: "relative",
+          borderRadius: 1,
         }}
         onClick={onElementClick}
         ref={ref}

@@ -26,7 +26,7 @@ export default function Player({ file }) {
   }, [file]);
 
   return (
-    <Paper sx={{ mt: 2, p: 2 }} variant="outline">
+    <Paper sx={{ mt: 2, p: 2 }} variant="outlined">
       <Box sx={{ display: "flex" }}>
         <Typography variant="h6">{file.name}</Typography>
         <PlaybackMenu

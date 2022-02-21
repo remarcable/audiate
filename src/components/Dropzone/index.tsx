@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import type { DropzoneOptions } from "react-dropzone";
 
 import { Typography, Paper } from "@mui/material";
 

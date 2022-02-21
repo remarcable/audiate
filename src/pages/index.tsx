@@ -1,5 +1,3 @@
-import { useSelector, useDispatch } from "react-redux";
-
 import type { NextPage } from "next";
 import Head from "next/head";
 
@@ -8,14 +6,13 @@ import { Box, Container, Typography } from "@mui/material";
 import Player from "components/Player";
 import Dropzone from "components/Dropzone";
 
-import { RootState } from "state/store";
+import { useAppDispatch, useAppSelector } from "state/hooks";
 import { appActions } from "state/appSlice";
 
 const Home: NextPage = () => {
-  const dispatch = useDispatch();
-  const setFile = (file) => dispatch(appActions.setFile(file));
-  const file = useSelector((state: RootState) => state.app.file);
-
+  const dispatch = useAppDispatch();
+  const setFile = (file: File) => dispatch(appActions.setFile(file));
+  const file = useAppSelector((state) => state.app.file);
   return (
     <>
       <Head>

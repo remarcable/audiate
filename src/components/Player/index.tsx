@@ -1,5 +1,4 @@
 import React, { useCallback, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import ReactPlayer from "react-player";
 import { Box, Paper, Typography } from "@mui/material";
 
@@ -11,6 +10,7 @@ import MarkerList from "components/MarkerList";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { playerActions } from "state/playerSlice";
+import { useAppDispatch, useAppSelector } from "state/hooks";
 
 interface PlayerProps {
   file: {
@@ -20,30 +20,46 @@ interface PlayerProps {
   };
 }
 const Player: React.FC<PlayerProps> = ({ file }) => {
-  const dispatch = useDispatch();
-  const { playing, progress, duration, speed, markers } = useSelector(
+  const dispatch = useAppDispatch();
+  const { playing, progress, duration, speed, markers } = useAppSelector(
     (state) => state.player
   );
   const { objectUrl: fileUrl, name: fileName } = file;
 
-  const setPlaying = (playing) => dispatch(playerActions.setPlaying(playing));
+  const setPlaying = (playing: boolean) =>
+    dispatch(playerActions.setPlaying(playing));
   const togglePlaying = () => dispatch(playerActions.togglePlaying());
-  const setProgress = (progress) =>
+  const setProgress = (progress: number) =>
     dispatch(playerActions.setProgress(progress));
-  const setDuration = (duration) =>
+  const setDuration = (duration: number) =>
     dispatch(playerActions.setDuration(duration));
-  const setSpeed = (speed) => dispatch(playerActions.setSpeed(speed));
+  const setSpeed = (speed: number) => dispatch(playerActions.setSpeed(speed));
   const addMarker = () => dispatch(playerActions.addMarker());
-  const removeMarker = (marker) => dispatch(playerActions.removeMarker(marker));
+  const removeMarker = (marker: number) =>
+    dispatch(playerActions.removeMarker(marker));
 
-  const playerRef = useRef(null);
+  const playerRef = useRef<ReactPlayer>(null);
 
-  useHotkeys("k", () => togglePlaying(), [togglePlaying]);
-  useHotkeys("space", (e) => (e.preventDefault(), addMarker()), [addMarker]);
+  useHotkeys(
+    "k",
+    () => {
+      togglePlaying();
+    },
+    [togglePlaying]
+  );
+
+  useHotkeys(
+    "space",
+    (e) => {
+      e.preventDefault();
+      addMarker();
+    },
+    [addMarker]
+  );
 
   const relativeSeek = useCallback(
-    (seconds) => {
-      playerRef.current.seekTo(progress * duration + seconds, "seconds");
+    (seconds: number) => {
+      playerRef.current?.seekTo(progress * duration + seconds, "seconds");
     },
     [progress, duration]
   );
@@ -88,7 +104,7 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
           progress={progress}
           audioDuration={duration}
           markers={markers}
-          onClick={(clickedAt) => playerRef.current.seekTo(clickedAt)}
+          onClick={(clickedAt) => playerRef.current?.seekTo(clickedAt)}
         />
       </Paper>
       <MarkerList

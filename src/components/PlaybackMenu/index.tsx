@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { type MouseEvent, useState } from "react";
 
 import { Button, ButtonGroup, Menu, MenuItem } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -19,13 +19,13 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
   setSpeed,
   addMarker,
 }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleSpeedButtonClick = (e) => {
+  const handleSpeedButtonClick = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
   };
 
-  const makeSpeedButtonHandleClose = (speed) => () => {
+  const makeSpeedButtonHandleClose = (speed: number | null) => () => {
     if (speed) {
       setSpeed(speed);
     }

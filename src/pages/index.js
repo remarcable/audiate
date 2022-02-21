@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import Head from "next/head";

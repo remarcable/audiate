@@ -9,31 +9,22 @@ import PlaybackMenu from "components/PlaybackMenu";
 import MarkerList from "components/MarkerList";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import { useAppState, useDispatch } from "lib/reducerContext";
+import { actionCreators } from "lib/actions";
+
 export default function Player({ file }) {
-  const [playing, setPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [markers, setMarkers] = useState([]);
-  const [speed, setSpeed] = useState(1);
+  const { player } = useAppState();
+  const { playing, progress, duration, speed, markers } = player;
+
+  const setPlaying = useDispatch(actionCreators.setPlaying);
+  const setProgress = useDispatch(actionCreators.setProgress);
+  const setDuration = useDispatch(actionCreators.setDuration);
+  const setSpeed = useDispatch(actionCreators.setSpeed);
+  const addMarker = useDispatch(actionCreators.addMarker);
+  const removeMarker = useDispatch(actionCreators.removeMarker);
 
   const playerRef = useRef(null);
   const fileUrl = useMemo(() => URL.createObjectURL(file), [file]);
-
-  const addMarker = useCallback(() => {
-    setMarkers((prevMarkers) => {
-      if (prevMarkers.includes(progress)) return prevMarkers;
-      return [...prevMarkers, progress].sort((a, b) => b - a);
-    });
-  }, [progress, setMarkers]);
-
-  const removeMarker = useCallback(
-    (markerProgress) => {
-      setMarkers((prevMarkers) =>
-        prevMarkers.filter((m) => m !== markerProgress)
-      );
-    },
-    [setMarkers]
-  );
 
   useHotkeys("k", () => setPlaying((prev) => !prev), [setPlaying]);
   useHotkeys("space", (e) => (e.preventDefault(), addMarker()), [addMarker]);

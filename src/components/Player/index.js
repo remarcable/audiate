@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import ReactPlayer from "react-player";
 import { Box, Paper, Typography } from "@mui/material";
 
@@ -9,24 +10,28 @@ import PlaybackMenu from "components/PlaybackMenu";
 import MarkerList from "components/MarkerList";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import { useAppState, useDispatch } from "lib/reducerContext";
-import { actionCreators } from "lib/actions";
+import { playerActions } from "state/playerSlice";
 
 export default function Player({ file }) {
-  const { player } = useAppState();
-  const { playing, progress, duration, speed, markers } = player;
+  const dispatch = useDispatch();
+  const { playing, progress, duration, speed, markers } = useSelector(
+    (state) => state.player
+  );
 
-  const setPlaying = useDispatch(actionCreators.setPlaying);
-  const setProgress = useDispatch(actionCreators.setProgress);
-  const setDuration = useDispatch(actionCreators.setDuration);
-  const setSpeed = useDispatch(actionCreators.setSpeed);
-  const addMarker = useDispatch(actionCreators.addMarker);
-  const removeMarker = useDispatch(actionCreators.removeMarker);
+  const setPlaying = (playing) => dispatch(playerActions.setPlaying(playing));
+  const togglePlaying = () => dispatch(playerActions.togglePlaying());
+  const setProgress = (progress) =>
+    dispatch(playerActions.setProgress(progress));
+  const setDuration = (duration) =>
+    dispatch(playerActions.setDuration(duration));
+  const setSpeed = (speed) => dispatch(playerActions.setSpeed(speed));
+  const addMarker = () => dispatch(playerActions.addMarker());
+  const removeMarker = (marker) => dispatch(playerActions.removeMarker(marker));
 
   const playerRef = useRef(null);
   const fileUrl = useMemo(() => URL.createObjectURL(file), [file]);
 
-  useHotkeys("k", () => setPlaying((prev) => !prev), [setPlaying]);
+  useHotkeys("k", () => togglePlaying(), [togglePlaying]);
   useHotkeys("space", (e) => (e.preventDefault(), addMarker()), [addMarker]);
 
   const relativeSeek = useCallback(

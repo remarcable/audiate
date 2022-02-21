@@ -1,3 +1,6 @@
+import { useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import Head from "next/head";
 
 import { Box, Container, Typography } from "@mui/material";
@@ -5,12 +8,12 @@ import { Box, Container, Typography } from "@mui/material";
 import Player from "components/Player";
 import Dropzone from "components/Dropzone";
 
-import { actionCreators } from "lib/actions";
-import { useAppState, useDispatch } from "lib/reducerContext";
+import { appActions } from "state/appSlice";
 
 export default function App() {
-  const { file } = useAppState();
-  const setFile = useDispatch(actionCreators.setFile);
+  const dispatch = useDispatch();
+  const setFile = (file) => dispatch(appActions.setFile(file));
+  const file = useSelector((state) => state.app.file);
 
   return (
     <>

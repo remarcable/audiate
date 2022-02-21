@@ -3,26 +3,22 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import { useImmerReducer } from "use-immer";
+import { Provider as ReduxProvider } from "react-redux";
+
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import theme from "lib/theme";
-import { reducer, initReducer } from "lib/reducer";
-import { AppStateContext, DispatchContext } from "lib/reducerContext";
+import { store } from "state/store";
 
 function MyApp({ Component, pageProps }) {
-  const [state, dispatch] = useImmerReducer(reducer, null, initReducer);
-
   return (
-    <DispatchContext.Provider value={dispatch}>
-      <AppStateContext.Provider value={state}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </AppStateContext.Provider>
-    </DispatchContext.Provider>
+    <ReduxProvider store={store}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </ReduxProvider>
   );
 }
 

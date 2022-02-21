@@ -17,6 +17,7 @@ export default function Player({ file }) {
   const { playing, progress, duration, speed, markers } = useSelector(
     (state) => state.player
   );
+  const { objectUrl: fileUrl, name: fileName } = file;
 
   const setPlaying = (playing) => dispatch(playerActions.setPlaying(playing));
   const togglePlaying = () => dispatch(playerActions.togglePlaying());
@@ -29,7 +30,6 @@ export default function Player({ file }) {
   const removeMarker = (marker) => dispatch(playerActions.removeMarker(marker));
 
   const playerRef = useRef(null);
-  const fileUrl = useMemo(() => URL.createObjectURL(file), [file]);
 
   useHotkeys("k", () => togglePlaying(), [togglePlaying]);
   useHotkeys("space", (e) => (e.preventDefault(), addMarker()), [addMarker]);
@@ -50,7 +50,7 @@ export default function Player({ file }) {
     <>
       <Paper sx={{ mt: 2, p: 2 }} variant="outlined">
         <Box sx={{ display: "flex" }}>
-          <Typography variant="h6">{file.name}</Typography>
+          <Typography variant="h6">{fileName}</Typography>
           <PlaybackMenu
             playing={playing}
             speed={speed}

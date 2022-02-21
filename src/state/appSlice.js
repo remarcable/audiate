@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  file: null,
+  file: {
+    name: null,
+    path: null,
+    objectUrl: null,
+  },
 };
 
 export const appSlice = createSlice({
@@ -9,7 +13,12 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     setFile: (state, action) => {
-      state.file = action.payload;
+      const input = action.payload;
+      state.file = {
+        name: input.name,
+        path: input.path,
+        objectUrl: URL.createObjectURL(input),
+      };
     },
   },
 });

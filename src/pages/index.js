@@ -32,8 +32,8 @@ export default function App() {
           <Typography variant="h3" gutterBottom>
             Audiate
           </Typography>
-          {!file && <Dropzone setFile={setFile} />}
-          {file && <Player file={file} />}
+          {!file.objectUrl && <Dropzone setFile={setFile} />}
+          {file.objectUrl && <Player file={file} />}
         </Box>
       </Container>
     </>

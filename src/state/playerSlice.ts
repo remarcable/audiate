@@ -39,8 +39,9 @@ export const playerSlice = createSlice({
       const { markers, progress: markerId } = state;
       if (markers.includes(markerId)) return;
 
-      const index = markers.findIndex((m) => m < markerId);
-      markers.splice(index, 0, markerId);
+      // TODO: optimize
+      markers.push(markerId);
+      markers.sort().reverse();
     },
     removeMarker: (state, action) => {
       const { markers } = state;

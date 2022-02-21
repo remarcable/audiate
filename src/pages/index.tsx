@@ -13,6 +13,7 @@ const Home: NextPage = () => {
   const dispatch = useAppDispatch();
   const setFile = (file: File) => dispatch(appActions.setFile(file));
   const file = useAppSelector((state) => state.app.file);
+
   return (
     <>
       <Head>
@@ -30,8 +31,8 @@ const Home: NextPage = () => {
           <Typography variant="h3" gutterBottom>
             Audiate
           </Typography>
-          {!file.objectUrl && <Dropzone setFile={setFile} />}
-          {file.objectUrl && <Player file={file} />}
+          {!file.hasFile && <Dropzone setFile={setFile} />}
+          {file.hasFile && <Player file={file} />}
         </Box>
       </Container>
     </>

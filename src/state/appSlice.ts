@@ -2,17 +2,19 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface AppState {
   file: {
-    name: string | null;
-    path: string | null;
-    objectUrl: ReturnType<typeof URL.createObjectURL> | null;
+    hasFile: boolean;
+    name: string;
+    path: string;
+    objectUrl: ReturnType<typeof URL.createObjectURL>;
   };
 }
 
 const initialState: AppState = {
   file: {
-    name: null,
-    path: null,
-    objectUrl: null,
+    hasFile: false,
+    name: "",
+    path: "",
+    objectUrl: "",
   },
 };
 
@@ -23,6 +25,7 @@ export const appSlice = createSlice({
     setFile: (state, action) => {
       const input = action.payload;
       state.file = {
+        hasFile: true,
         name: input.name,
         path: input.path,
         objectUrl: URL.createObjectURL(input),

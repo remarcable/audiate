@@ -9,7 +9,7 @@ interface DropzoneProps {
 }
 
 const Dropzone: React.FC<DropzoneProps> = ({ setFile }) => {
-  const onDrop = useCallback<DropzoneOptions["onDrop"]>(
+  const onDrop = useCallback(
     ([audioFile]) => {
       if (!audioFile) return;
       setFile(audioFile);

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { Box } from "@mui/material";
 
 import { useBoundingClientRect } from "hooks/useBoundingClientRect";
@@ -6,7 +6,19 @@ import { useBoundingClientRect } from "hooks/useBoundingClientRect";
 import ProgressText from "./ProgressText";
 import Marker from "./Marker";
 
-const ProgressBar = ({ progress, audioDuration, markers, onClick }) => {
+interface ProgressBarProps {
+  progress: number;
+  audioDuration: number;
+  markers: number[];
+  onClick: (seekTo: number) => void;
+}
+
+const ProgressBar: React.FC<ProgressBarProps> = ({
+  progress,
+  audioDuration,
+  markers,
+  onClick,
+}) => {
   const ref = useRef(null);
   const boundingClientRect = useBoundingClientRect(ref);
 

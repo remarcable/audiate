@@ -1,6 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+export interface AppState {
+  file: {
+    name: string | null;
+    path: string | null;
+    objectUrl: ReturnType<typeof URL.createObjectURL> | null;
+  };
+}
+
+const initialState: AppState = {
   file: {
     name: null,
     path: null,

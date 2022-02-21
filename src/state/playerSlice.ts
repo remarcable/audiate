@@ -1,6 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+export interface PlayerState {
+  playing: boolean;
+  progress: number;
+  duration: number;
+  speed: number;
+  markers: number[];
+}
+
+const initialState: PlayerState = {
   playing: false,
   progress: 0,
   duration: 0,

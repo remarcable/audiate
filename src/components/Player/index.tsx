@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ReactPlayer from "react-player";
 import { Box, Paper, Typography } from "@mui/material";
@@ -12,7 +12,14 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import { playerActions } from "state/playerSlice";
 
-export default function Player({ file }) {
+interface PlayerProps {
+  file: {
+    name: string;
+    objectUrl: string;
+    path: String;
+  };
+}
+const Player: React.FC<PlayerProps> = ({ file }) => {
   const dispatch = useDispatch();
   const { playing, progress, duration, speed, markers } = useSelector(
     (state) => state.player
@@ -93,4 +100,6 @@ export default function Player({ file }) {
       />
     </>
   );
-}
+};
+
+export default Player;

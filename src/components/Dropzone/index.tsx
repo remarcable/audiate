@@ -1,10 +1,15 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import type { DropzoneOptions } from "react-dropzone";
 
 import { Typography, Paper } from "@mui/material";
 
-const Dropzone = ({ setFile }) => {
-  const onDrop = useCallback(
+interface DropzoneProps {
+  setFile: (file: File) => void;
+}
+
+const Dropzone: React.FC<DropzoneProps> = ({ setFile }) => {
+  const onDrop = useCallback<DropzoneOptions["onDrop"]>(
     ([audioFile]) => {
       if (!audioFile) return;
       setFile(audioFile);

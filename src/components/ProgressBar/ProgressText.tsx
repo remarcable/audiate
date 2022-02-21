@@ -1,7 +1,13 @@
+import React from "react";
 import { Typography } from "@mui/material";
 import { getMinutesSeconds } from "utils/getMinutesSeconds";
 
-const ProgressText = ({ duration, progress }) => {
+interface ProgressTextProps {
+  duration: number;
+  progress: number;
+}
+
+const ProgressText: React.FC<ProgressTextProps> = ({ duration, progress }) => {
   const { minutes: durationMinutes, seconds: durationSeconds } =
     getMinutesSeconds(duration);
   const { minutes: currentMinutes, seconds: currentSeconds } =

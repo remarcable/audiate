@@ -1,7 +1,13 @@
+import React from "react";
 import { Box, Typography } from "@mui/material";
 import { getMinutesSeconds } from "utils/getMinutesSeconds";
 
-const Marker = ({ relativePosition, audioDuration }) => {
+interface MarkerProps {
+  relativePosition: number;
+  audioDuration: number;
+}
+
+const Marker: React.FC<MarkerProps> = ({ relativePosition, audioDuration }) => {
   const { minutes, seconds } = getMinutesSeconds(
     relativePosition * audioDuration
   );

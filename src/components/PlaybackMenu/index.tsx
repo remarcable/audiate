@@ -1,10 +1,24 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { Button, ButtonGroup, Menu, MenuItem } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const SPEED_OPTIONS = [0.5, 1, 1.5, 2];
-const PlaybackMenu = ({ speed, playing, setPlaying, setSpeed, addMarker }) => {
+
+interface PlaybackMenuProps {
+  speed: number;
+  playing: boolean;
+  setPlaying: (playing: boolean) => void;
+  setSpeed: (speed: typeof SPEED_OPTIONS[number]) => void;
+  addMarker: () => void;
+}
+const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
+  speed,
+  playing,
+  setPlaying,
+  setSpeed,
+  addMarker,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleSpeedButtonClick = (e) => {

@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
   Box,
   Button,
@@ -10,7 +12,16 @@ import {
   TableRow,
 } from "@mui/material";
 
-const MarkerList = ({ markers, removeMarker }) => (
+interface MarkerListProps {
+  markers: Array<{
+    relativeTime: number;
+    minutes: string;
+    seconds: string;
+  }>;
+  removeMarker: (markerId: number) => void;
+}
+
+const MarkerList: React.FC<MarkerListProps> = ({ markers, removeMarker }) => (
   <Box mt={3}>
     <TableContainer
       component={Paper}

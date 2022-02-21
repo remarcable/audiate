@@ -14,14 +14,15 @@ export default function Player({ file }) {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [markers, setMarkers] = useState([]);
-
   const [speed, setSpeed] = useState(1);
+
   const playerRef = useRef(null);
+  const fileUrl = useMemo(() => URL.createObjectURL(file), [file]);
 
   const addMarker = useCallback(() => {
     setMarkers((prevMarkers) => {
       if (prevMarkers.includes(progress)) return prevMarkers;
-      return [...prevMarkers, progress];
+      return [...prevMarkers, progress].sort((a, b) => b - a);
     });
   }, [progress, setMarkers]);
 
@@ -34,19 +35,20 @@ export default function Player({ file }) {
     [setMarkers]
   );
 
-  const fileUrl = useMemo(() => {
-    return URL.createObjectURL(file);
-  }, [file]);
-
   useHotkeys("k", () => setPlaying((prev) => !prev), [setPlaying]);
-  useHotkeys(
-    "space",
-    (e) => {
-      e.preventDefault();
-      addMarker();
+  useHotkeys("space", (e) => (e.preventDefault(), addMarker()), [addMarker]);
+
+  const relativeSeek = useCallback(
+    (seconds) => {
+      playerRef.current.seekTo(progress * duration + seconds, "seconds");
     },
-    [addMarker]
+    [progress, duration]
   );
+
+  useHotkeys("j", () => relativeSeek(-10), [relativeSeek]);
+  useHotkeys("l", () => relativeSeek(+10), [relativeSeek]);
+  useHotkeys("left", () => relativeSeek(-5), [relativeSeek]);
+  useHotkeys("right", () => relativeSeek(+5), [relativeSeek]);
 
   return (
     <>
@@ -88,12 +90,10 @@ export default function Player({ file }) {
       </Paper>
       <MarkerList
         removeMarker={removeMarker}
-        markers={markers
-          .map((marker) => ({
-            relativeTime: marker,
-            ...getMinutesSeconds(marker * duration),
-          }))
-          .reverse()}
+        markers={markers.map((marker) => ({
+          relativeTime: marker,
+          ...getMinutesSeconds(marker * duration),
+        }))}
       />
     </>
   );

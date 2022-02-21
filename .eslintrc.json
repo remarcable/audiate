@@ -1,7 +1,9 @@
 {
-  "plugins": ["import", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "import", "prettier"],
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
     "plugin:import/recommended",
     "plugin:import/typescript",
@@ -13,5 +15,6 @@
         "paths": "src"
       }
     }
-  }
+  },
+  "rules": {}
 }

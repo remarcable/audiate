@@ -16,7 +16,7 @@ interface PlayerProps {
   file: {
     name: string;
     objectUrl: string;
-    path: String;
+    path: string;
   };
 }
 const Player: React.FC<PlayerProps> = ({ file }) => {

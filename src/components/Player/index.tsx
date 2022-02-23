@@ -52,18 +52,22 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
   useHotkeys(
     "k",
     () => {
-      togglePlaying();
+      if (!jumpToMeasureDialogIsOpen) {
+        togglePlaying();
+      }
     },
-    [togglePlaying]
+    [jumpToMeasureDialogIsOpen, togglePlaying]
   );
 
   useHotkeys(
     "space",
     (e) => {
-      e.preventDefault();
-      addMeasureMarker();
+      if (!jumpToMeasureDialogIsOpen) {
+        e.preventDefault();
+        addMeasureMarker();
+      }
     },
-    [addMeasureMarker]
+    [jumpToMeasureDialogIsOpen, addMeasureMarker]
   );
 
   useHotkeys(
@@ -77,9 +81,11 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
 
   const relativeSeek = useCallback(
     (seconds: number) => {
-      playerRef.current?.seekTo(progress * duration + seconds, "seconds");
+      if (!jumpToMeasureDialogIsOpen) {
+        playerRef.current?.seekTo(progress * duration + seconds, "seconds");
+      }
     },
-    [progress, duration]
+    [progress, duration, jumpToMeasureDialogIsOpen]
   );
 
   useHotkeys("j", () => relativeSeek(-10), [relativeSeek]);

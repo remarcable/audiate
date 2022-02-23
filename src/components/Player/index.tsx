@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from "state/hooks";
 interface PlayerProps {
   file: {
     name: string;
-    objectUrl: string;
+    url: string;
     path: string;
   };
 }
@@ -24,7 +24,7 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
   const { playing, progress, duration, speed, markers } = useAppSelector(
     (state) => state.player
   );
-  const { objectUrl: fileUrl, name: fileName } = file;
+  const { url: fileUrl, name: fileName } = file;
 
   const setPlaying = (playing: boolean) =>
     dispatch(playerActions.setPlaying(playing));

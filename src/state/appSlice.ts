@@ -5,7 +5,7 @@ export interface AppState {
     hasFile: boolean;
     name: string;
     path: string;
-    objectUrl: ReturnType<typeof URL.createObjectURL>;
+    url: string;
   };
 }
 
@@ -14,7 +14,7 @@ const initialState: AppState = {
     hasFile: false,
     name: "",
     path: "",
-    objectUrl: "",
+    url: "",
   },
 };
 
@@ -23,13 +23,8 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     setFile: (state, action) => {
-      const input = action.payload;
-      state.file = {
-        hasFile: true,
-        name: input.name,
-        path: input.path,
-        objectUrl: URL.createObjectURL(input),
-      };
+      const { name, path, url } = action.payload;
+      state.file = { hasFile: true, name, path, url };
     },
   },
 });

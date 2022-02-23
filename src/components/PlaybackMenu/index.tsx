@@ -3,7 +3,7 @@ import React, { type MouseEvent, useState } from "react";
 import { Button, ButtonGroup, Menu, MenuItem } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-import JumpDialog from "./JumpDialog";
+import CreateJumpMarkerDialog from "./CreateJumpMarkerDialog";
 
 const SPEED_OPTIONS = [0.5, 1, 1.5, 2];
 
@@ -74,7 +74,7 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
           Set Jump Marker
         </Button>
       </ButtonGroup>
-      <JumpDialog
+      <CreateJumpMarkerDialog
         open={jumpToMeasureDialogIsOpen}
         handleClose={handleJumpMarkerDialogClose}
       />

@@ -8,11 +8,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-interface PlaybackMenuProps {
+interface CreateJumpMarkerDialogProps {
   open: boolean;
   handleClose: (jumpToMeasure: number | null) => void;
 }
-const JumpDialog: React.FC<PlaybackMenuProps> = ({ open, handleClose }) => (
+const CreateJumpMarkerDialog: React.FC<CreateJumpMarkerDialogProps> = ({
+  open,
+  handleClose,
+}) => (
   <Dialog open={open} onClose={() => handleClose(null)}>
     <form
       onSubmit={(e: FormEvent) => {
@@ -47,4 +50,4 @@ const JumpDialog: React.FC<PlaybackMenuProps> = ({ open, handleClose }) => (
   </Dialog>
 );
 
-export default JumpDialog;
+export default CreateJumpMarkerDialog;

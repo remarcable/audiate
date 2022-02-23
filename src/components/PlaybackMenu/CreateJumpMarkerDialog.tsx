@@ -24,7 +24,7 @@ const CreateJumpMarkerDialog: React.FC<CreateJumpMarkerDialogProps> = ({
         const target = e.target as typeof e.target & {
           measure: { value: number };
         };
-        handleClose(target.measure.value ?? null);
+        handleClose(+target.measure.value ?? null);
       }}
     >
       <DialogTitle>Add Jump Marker</DialogTitle>

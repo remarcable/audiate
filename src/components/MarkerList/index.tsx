@@ -12,8 +12,9 @@ import {
   TableRow,
 } from "@mui/material";
 
-import type { Marker } from "state/playerSlice";
+import { Marker, MarkerType } from "state/playerSlice";
 import { getMinutes, getSeconds } from "utils/getMinutesSeconds";
+import { getMarkersWithMeasures } from "utils/getMarkersWithMeasures";
 
 interface MarkerListProps {
   markers: Marker[];
@@ -21,6 +22,8 @@ interface MarkerListProps {
 }
 
 const MarkerList: React.FC<MarkerListProps> = ({ markers, removeMarker }) => {
+  const markersWithMeasures = getMarkersWithMeasures(markers);
+
   return (
     <Box mt={3}>
       <TableContainer
@@ -28,35 +31,42 @@ const MarkerList: React.FC<MarkerListProps> = ({ markers, removeMarker }) => {
         variant="outlined"
         sx={{ maxHeight: "60vh", overflow: "scroll" }}
       >
-        <Table sx={{ minWidth: 650 }}>
-          <TableHead
-            sx={{
-              position: "sticky",
-              top: 0,
-              backgroundColor: "background.paper",
-              width: "100%",
-              zIndex: 10,
-            }}
-          >
+        <Table sx={{ minWidth: 650 }} stickyHeader>
+          <TableHead sx={{ width: "100%" }}>
             <TableRow>
-              <TableCell>Markerposition</TableCell>
+              <TableCell>Measure</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>Jump To</TableCell>
+              <TableCell>Time</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {markers.map(({ time }) => (
-              <TableRow
-                key={time}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {getMinutes(time)}:{getSeconds(time)} ({time.toFixed(3)}s)
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <Button onClick={() => removeMarker(time)}>Remove</Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {markersWithMeasures
+              .reverse()
+              .map(({ time, measure, type, jumpToMeasure }) => (
+                <TableRow
+                  key={time}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  selected={type === MarkerType.Jump}
+                >
+                  <TableCell component="th" scope="row">
+                    {measure}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {type}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {jumpToMeasure ?? "-"}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {getMinutes(time)}:{getSeconds(time)} ({time.toFixed(3)}s)
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <Button onClick={() => removeMarker(time)}>Remove</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

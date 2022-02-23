@@ -86,7 +86,7 @@ const addMarker = (
 
   // TODO: optimize
   markers.push({ ...marker, time });
-  markers.sort((a, b) => a.time - b.time).reverse();
+  markers.sort((a, b) => a.time - b.time);
 };
 
 export const playerActions = playerSlice.actions;

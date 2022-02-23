@@ -1,16 +1,13 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { getMinutesSeconds } from "utils/getMinutesSeconds";
+import { getMinutes, getSeconds } from "utils/getMinutesSeconds";
 
 interface MarkerProps {
   relativePosition: number;
-  audioDuration: number;
+  time: number;
 }
 
-const Marker: React.FC<MarkerProps> = ({ relativePosition, audioDuration }) => {
-  const { minutes, seconds } = getMinutesSeconds(
-    relativePosition * audioDuration
-  );
+const Marker: React.FC<MarkerProps> = ({ relativePosition, time }) => {
   return (
     <Box
       sx={{
@@ -38,7 +35,7 @@ const Marker: React.FC<MarkerProps> = ({ relativePosition, audioDuration }) => {
           textAlign: "center",
         }}
       >
-        {minutes}:{seconds}
+        {getMinutes(time)}:{getSeconds(time)}
       </Typography>
     </Box>
   );

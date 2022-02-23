@@ -5,11 +5,12 @@ import { useBoundingClientRect } from "hooks/useBoundingClientRect";
 
 import ProgressText from "./ProgressText";
 import Marker from "./Marker";
+import type { Marker as MarkerType } from "state/playerSlice";
 
 interface ProgressBarProps {
   progress: number;
   audioDuration: number;
-  markers: number[];
+  markers: MarkerType[];
   onClick: (seekTo: number) => void;
 }
 
@@ -59,13 +60,10 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           }}
           style={{ width: `${progress * 100}%` }}
         />
-        {markers.map((relativePosition, i) => {
+        {markers.map(({ time }, i) => {
+          const relativePosition = time / audioDuration;
           return (
-            <Marker
-              key={i}
-              audioDuration={audioDuration}
-              relativePosition={relativePosition}
-            />
+            <Marker key={i} time={time} relativePosition={relativePosition} />
           );
         })}
       </Box>

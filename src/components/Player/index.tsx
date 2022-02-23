@@ -107,13 +107,7 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
           onClick={(clickedAt) => playerRef.current?.seekTo(clickedAt)}
         />
       </Paper>
-      <MarkerList
-        removeMarker={removeMarker}
-        markers={markers.map((marker) => ({
-          relativeTime: marker,
-          ...getMinutesSeconds(marker * duration),
-        }))}
-      />
+      <MarkerList removeMarker={removeMarker} markers={markers} />
     </>
   );
 };

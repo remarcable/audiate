@@ -5,7 +5,17 @@ export interface PlayerState {
   progress: number;
   duration: number;
   speed: number;
-  markers: number[];
+  markers: Marker[];
+}
+
+export enum MarkerType {
+  Jump = "JUMP",
+  Measure = "MEASURE",
+}
+export interface Marker {
+  type: MarkerType;
+  time: number;
+  jumpTo?: number;
 }
 
 const initialState: PlayerState = {
@@ -36,16 +46,18 @@ export const playerSlice = createSlice({
       state.speed = action.payload;
     },
     addMarker: (state) => {
-      const { markers, progress: markerId } = state;
-      if (markers.includes(markerId)) return;
+      const { markers, progress, duration } = state;
+      const time = progress * duration;
+
+      if (markers.find((marker) => marker.time === time)) return;
 
       // TODO: optimize
-      markers.push(markerId);
-      markers.sort().reverse();
+      markers.push({ type: MarkerType.Measure, time });
+      markers.sort((a, b) => a.time - b.time).reverse();
     },
     removeMarker: (state, action) => {
       const { markers } = state;
-      const index = markers.findIndex((m) => m === action.payload);
+      const index = markers.findIndex((m) => m.time === action.payload);
 
       if (index !== -1) {
         markers.splice(index, 1);

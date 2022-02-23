@@ -42,7 +42,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       <ProgressText duration={audioDuration} progress={progress} />
       <Box
         sx={{
-          backgroundColor: "grey.200",
+          backgroundColor: "divider",
           height: 40,
           position: "relative",
           borderRadius: 1,
@@ -52,7 +52,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       >
         <Box
           sx={{
-            backgroundColor: "primary.light",
+            backgroundColor: "primary.main",
             height: "100%",
             borderTopLeftRadius: (theme) => theme.shape.borderRadius,
             borderBottomLeftRadius: (theme) => theme.shape.borderRadius,

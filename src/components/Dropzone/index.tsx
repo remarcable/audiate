@@ -68,7 +68,7 @@ const Dropzone: React.FC<DropzoneProps> = ({ setFile }) => {
           color="secondary"
           onClick={() => handleClick()}
         >
-          Use Chopin as an example
+          Use Example File
         </Button>
       </Box>
     </>

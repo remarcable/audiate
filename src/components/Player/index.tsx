@@ -34,7 +34,7 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
   const setDuration = (duration: number) =>
     dispatch(playerActions.setDuration(duration));
   const setSpeed = (speed: number) => dispatch(playerActions.setSpeed(speed));
-  const addMarker = () => dispatch(playerActions.addMarker());
+  const addMeasureMarker = () => dispatch(playerActions.addMeasureMarker());
   const removeMarker = (marker: number) =>
     dispatch(playerActions.removeMarker(marker));
 
@@ -52,9 +52,9 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
     "space",
     (e) => {
       e.preventDefault();
-      addMarker();
+      addMeasureMarker();
     },
-    [addMarker]
+    [addMeasureMarker]
   );
 
   const relativeSeek = useCallback(
@@ -79,7 +79,7 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
             speed={speed}
             setPlaying={setPlaying}
             setSpeed={setSpeed}
-            addMarker={addMarker}
+            addMeasureMarker={addMeasureMarker}
           />
         </Box>
 

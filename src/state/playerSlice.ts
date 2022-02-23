@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { WritableDraft } from "immer/dist/internal";
 
 export interface PlayerState {
   playing: boolean;
@@ -45,15 +46,13 @@ export const playerSlice = createSlice({
     setSpeed: (state, action) => {
       state.speed = action.payload;
     },
-    addMarker: (state) => {
-      const { markers, progress, duration } = state;
-      const time = progress * duration;
+    addMeasureMarker: (state) => {
+      addMarker(state, { type: MarkerType.Measure });
+    },
+    addJumpMarker: (state, action) => {
+      const jumpTo: number = action.payload;
 
-      if (markers.find((marker) => marker.time === time)) return;
-
-      // TODO: optimize
-      markers.push({ type: MarkerType.Measure, time });
-      markers.sort((a, b) => a.time - b.time).reverse();
+      addMarker(state, { type: MarkerType.Jump, jumpTo });
     },
     removeMarker: (state, action) => {
       const { markers } = state;
@@ -65,6 +64,20 @@ export const playerSlice = createSlice({
     },
   },
 });
+
+const addMarker = (
+  state: WritableDraft<PlayerState>,
+  marker: Pick<Marker, "type" | "jumpTo">
+) => {
+  const { markers, progress, duration } = state;
+  const time = progress * duration;
+
+  if (markers.find((m) => m.time === time)) return;
+
+  // TODO: optimize
+  markers.push({ ...marker, time });
+  markers.sort((a, b) => a.time - b.time).reverse();
+};
 
 export const playerActions = playerSlice.actions;
 export default playerSlice.reducer;

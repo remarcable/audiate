@@ -10,14 +10,14 @@ interface PlaybackMenuProps {
   playing: boolean;
   setPlaying: (playing: boolean) => void;
   setSpeed: (speed: typeof SPEED_OPTIONS[number]) => void;
-  addMarker: () => void;
+  addMeasureMarker: () => void;
 }
 const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
   speed,
   playing,
   setPlaying,
   setSpeed,
-  addMarker,
+  addMeasureMarker,
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -59,7 +59,7 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
           </MenuItem>
         ))}
       </Menu>
-      <Button onClick={() => addMarker()}>Set Marker</Button>
+      <Button onClick={() => addMeasureMarker()}>Set Marker</Button>
     </ButtonGroup>
   );
 };

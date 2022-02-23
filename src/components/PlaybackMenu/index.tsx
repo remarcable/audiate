@@ -13,7 +13,10 @@ interface PlaybackMenuProps {
   setPlaying: (playing: boolean) => void;
   setSpeed: (speed: typeof SPEED_OPTIONS[number]) => void;
   addMeasureMarker: () => void;
-  addJumpMarker: (jumpToMeasure: number) => void;
+
+  jumpToMeasureDialogIsOpen: boolean;
+  openJumpToMeasureDialog: () => void;
+  handleJumpMarkerDialogClose: (jumpToMeasure: number | null) => void;
 }
 const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
   speed,
@@ -21,9 +24,10 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
   setPlaying,
   setSpeed,
   addMeasureMarker,
-  addJumpMarker,
+  jumpToMeasureDialogIsOpen,
+  openJumpToMeasureDialog,
+  handleJumpMarkerDialogClose,
 }) => {
-  const [jumpDialogOpen, setJumpDialogOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleSpeedButtonClick = (e: MouseEvent<HTMLElement>) => {
@@ -66,16 +70,13 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
           ))}
         </Menu>
         <Button onClick={() => addMeasureMarker()}>Set Marker</Button>
-        <Button onClick={() => setJumpDialogOpen(true)}>Set Jump Marker</Button>
+        <Button onClick={() => openJumpToMeasureDialog()}>
+          Set Jump Marker
+        </Button>
       </ButtonGroup>
       <JumpDialog
-        open={jumpDialogOpen}
-        handleClose={(jumpToMeasure) => {
-          setJumpDialogOpen(false);
-          if (jumpToMeasure) {
-            addJumpMarker(jumpToMeasure);
-          }
-        }}
+        open={jumpToMeasureDialogIsOpen}
+        handleClose={handleJumpMarkerDialogClose}
       />
     </>
   );

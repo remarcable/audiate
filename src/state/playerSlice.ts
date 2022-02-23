@@ -6,6 +6,7 @@ export interface PlayerState {
   progress: number;
   duration: number;
   speed: number;
+  jumpToMeasureDialogIsOpen: boolean;
   markers: Marker[];
 }
 
@@ -24,6 +25,7 @@ const initialState: PlayerState = {
   progress: 0,
   duration: 0,
   speed: 1,
+  jumpToMeasureDialogIsOpen: false,
   markers: [],
 };
 
@@ -46,13 +48,21 @@ export const playerSlice = createSlice({
     setSpeed: (state, action) => {
       state.speed = action.payload;
     },
+    openJumpToMeasureDialog: (state) => {
+      state.playing = false;
+      state.jumpToMeasureDialogIsOpen = true;
+    },
     addMeasureMarker: (state) => {
       addMarker(state, { type: MarkerType.Measure });
     },
-    addJumpMarker: (state, action) => {
-      const jumpToMeasure: number = action.payload;
+    handleJumpMarkerDialogClose: (state, action) => {
+      state.playing = true;
+      state.jumpToMeasureDialogIsOpen = false;
 
-      addMarker(state, { type: MarkerType.Jump, jumpToMeasure });
+      const jumpToMeasure: number | null = action.payload;
+      if (jumpToMeasure) {
+        addMarker(state, { type: MarkerType.Jump, jumpToMeasure });
+      }
     },
     removeMarker: (state, action) => {
       const { markers } = state;

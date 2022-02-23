@@ -21,9 +21,14 @@ interface PlayerProps {
 }
 const Player: React.FC<PlayerProps> = ({ file }) => {
   const dispatch = useAppDispatch();
-  const { playing, progress, duration, speed, markers } = useAppSelector(
-    (state) => state.player
-  );
+  const {
+    playing,
+    progress,
+    duration,
+    speed,
+    jumpToMeasureDialogIsOpen,
+    markers,
+  } = useAppSelector((state) => state.player);
   const { url: fileUrl, name: fileName } = file;
 
   const setPlaying = (playing: boolean) =>
@@ -35,8 +40,10 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
     dispatch(playerActions.setDuration(duration));
   const setSpeed = (speed: number) => dispatch(playerActions.setSpeed(speed));
   const addMeasureMarker = () => dispatch(playerActions.addMeasureMarker());
-  const addJumpMarker = (jumpToMeasure: number) =>
-    dispatch(playerActions.addJumpMarker(jumpToMeasure));
+  const openJumpToMeasureDialog = () =>
+    dispatch(playerActions.openJumpToMeasureDialog());
+  const handleJumpMarkerDialogClose = (jumpToMeasure: number | null) =>
+    dispatch(playerActions.handleJumpMarkerDialogClose(jumpToMeasure));
   const removeMarker = (marker: number) =>
     dispatch(playerActions.removeMarker(marker));
 
@@ -57,6 +64,15 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
       addMeasureMarker();
     },
     [addMeasureMarker]
+  );
+
+  useHotkeys(
+    "shift+space",
+    (e) => {
+      e.preventDefault();
+      openJumpToMeasureDialog();
+    },
+    [openJumpToMeasureDialog]
   );
 
   const relativeSeek = useCallback(
@@ -82,7 +98,9 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
             setPlaying={setPlaying}
             setSpeed={setSpeed}
             addMeasureMarker={addMeasureMarker}
-            addJumpMarker={addJumpMarker}
+            jumpToMeasureDialogIsOpen={jumpToMeasureDialogIsOpen}
+            openJumpToMeasureDialog={openJumpToMeasureDialog}
+            handleJumpMarkerDialogClose={handleJumpMarkerDialogClose}
           />
         </Box>
 

@@ -11,7 +11,8 @@ import { appActions } from "state/appSlice";
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
-  const setFile = (file: File) => dispatch(appActions.setFile(file));
+  const setFile = (file: { name: string; path: string; url: string }) =>
+    dispatch(appActions.setFile(file));
   const file = useAppSelector((state) => state.app.file);
 
   return (

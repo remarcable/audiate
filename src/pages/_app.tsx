@@ -6,14 +6,15 @@ import "@fontsource/roboto/700.css";
 import type { AppProps } from "next/app";
 
 import { Provider as ReduxProvider } from "react-redux";
-
-import { ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 
-import theme from "lib/theme";
+import useMaterialUITheme from "hooks/useMaterialUITheme";
 import { store } from "state/store";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const theme = useMaterialUITheme();
+
   return (
     <ReduxProvider store={store}>
       <ThemeProvider theme={theme}>

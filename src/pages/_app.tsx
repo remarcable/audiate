@@ -12,6 +12,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import useMaterialUITheme from "hooks/useMaterialUITheme";
 import { store } from "state/store";
 
+import "./global.css";
+
 function MyApp({ Component, pageProps }: AppProps) {
   const theme = useMaterialUITheme();
 

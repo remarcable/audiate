@@ -35,6 +35,8 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
     dispatch(playerActions.setDuration(duration));
   const setSpeed = (speed: number) => dispatch(playerActions.setSpeed(speed));
   const addMeasureMarker = () => dispatch(playerActions.addMeasureMarker());
+  const addJumpMarker = (jumpToMeasure: number) =>
+    dispatch(playerActions.addJumpMarker(jumpToMeasure));
   const removeMarker = (marker: number) =>
     dispatch(playerActions.removeMarker(marker));
 
@@ -80,6 +82,7 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
             setPlaying={setPlaying}
             setSpeed={setSpeed}
             addMeasureMarker={addMeasureMarker}
+            addJumpMarker={addJumpMarker}
           />
         </Box>
 

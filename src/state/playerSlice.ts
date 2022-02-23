@@ -16,7 +16,7 @@ export enum MarkerType {
 export interface Marker {
   type: MarkerType;
   time: number;
-  jumpTo?: number;
+  jumpToMeasure?: number;
 }
 
 const initialState: PlayerState = {
@@ -50,9 +50,9 @@ export const playerSlice = createSlice({
       addMarker(state, { type: MarkerType.Measure });
     },
     addJumpMarker: (state, action) => {
-      const jumpTo: number = action.payload;
+      const jumpToMeasure: number = action.payload;
 
-      addMarker(state, { type: MarkerType.Jump, jumpTo });
+      addMarker(state, { type: MarkerType.Jump, jumpToMeasure });
     },
     removeMarker: (state, action) => {
       const { markers } = state;
@@ -67,7 +67,7 @@ export const playerSlice = createSlice({
 
 const addMarker = (
   state: WritableDraft<PlayerState>,
-  marker: Pick<Marker, "type" | "jumpTo">
+  marker: Pick<Marker, "type" | "jumpToMeasure">
 ) => {
   const { markers, progress, duration } = state;
   const time = progress * duration;

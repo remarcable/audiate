@@ -2,15 +2,13 @@ import React, { useCallback, useRef } from "react";
 import ReactPlayer from "react-player";
 import { Box, Paper, Typography } from "@mui/material";
 
-import { getMinutesSeconds } from "utils/getMinutesSeconds";
-
 import ProgressBar from "components/ProgressBar";
 import PlaybackMenu from "components/PlaybackMenu";
 import MarkerList from "components/MarkerList";
-import { useHotkeys } from "react-hotkeys-hook";
 
 import { playerActions } from "state/playerSlice";
 import { useAppDispatch, useAppSelector } from "state/hooks";
+import { usePlayerHotkeys } from "hooks/usePlayerHotkeys";
 
 interface PlayerProps {
   file: {
@@ -49,36 +47,6 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
 
   const playerRef = useRef<ReactPlayer>(null);
 
-  useHotkeys(
-    "k",
-    () => {
-      if (!jumpToMeasureDialogIsOpen) {
-        togglePlaying();
-      }
-    },
-    [jumpToMeasureDialogIsOpen, togglePlaying]
-  );
-
-  useHotkeys(
-    "space",
-    (e) => {
-      if (!jumpToMeasureDialogIsOpen) {
-        e.preventDefault();
-        addMeasureMarker();
-      }
-    },
-    [jumpToMeasureDialogIsOpen, addMeasureMarker]
-  );
-
-  useHotkeys(
-    "shift+space",
-    (e) => {
-      e.preventDefault();
-      openJumpToMeasureDialog();
-    },
-    [openJumpToMeasureDialog]
-  );
-
   const relativeSeek = useCallback(
     (seconds: number) => {
       if (!jumpToMeasureDialogIsOpen) {
@@ -88,10 +56,13 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
     [progress, duration, jumpToMeasureDialogIsOpen]
   );
 
-  useHotkeys("j", () => relativeSeek(-10), [relativeSeek]);
-  useHotkeys("l", () => relativeSeek(+10), [relativeSeek]);
-  useHotkeys("left", () => relativeSeek(-5), [relativeSeek]);
-  useHotkeys("right", () => relativeSeek(+5), [relativeSeek]);
+  usePlayerHotkeys({
+    jumpToMeasureDialogIsOpen,
+    togglePlaying,
+    addMeasureMarker,
+    openJumpToMeasureDialog,
+    relativeSeek,
+  });
 
   return (
     <>

@@ -60,10 +60,15 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           }}
           style={{ width: `${progress * 100}%` }}
         />
-        {markers.map(({ time }, i) => {
+        {markers.map(({ time, type }, i) => {
           const relativePosition = time / audioDuration;
           return (
-            <Marker key={i} time={time} relativePosition={relativePosition} />
+            <Marker
+              key={i}
+              time={time}
+              type={type}
+              relativePosition={relativePosition}
+            />
           );
         })}
       </Box>

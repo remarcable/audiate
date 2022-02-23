@@ -1,13 +1,20 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { getMinutes, getSeconds } from "utils/getMinutesSeconds";
+import { MarkerType } from "state/playerSlice";
 
 interface MarkerProps {
   relativePosition: number;
   time: number;
+  type: MarkerType;
 }
 
-const Marker: React.FC<MarkerProps> = ({ relativePosition, time }) => {
+const markerColor = {
+  [MarkerType.Measure]: "secondary.main",
+  [MarkerType.Jump]: "error.main",
+};
+
+const Marker: React.FC<MarkerProps> = ({ relativePosition, time, type }) => {
   return (
     <Box
       sx={{
@@ -23,7 +30,7 @@ const Marker: React.FC<MarkerProps> = ({ relativePosition, time }) => {
         sx={{
           position: "absolute",
           top: "-20%",
-          backgroundColor: "secondary.main",
+          backgroundColor: markerColor[type],
         }}
       />
       <Typography

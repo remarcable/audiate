@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { getMinutes, getSeconds } from "utils/getMinutesSeconds";
+import { getMinutes, getSeconds } from "lib/getMinutesSeconds";
 import { MarkerType } from "state/playerSlice";
 
 interface MarkerProps {

@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 
 import { Marker, MarkerType } from "state/playerSlice";
-import { getMinutes, getSeconds } from "utils/getMinutesSeconds";
-import { getMarkersWithMeasures } from "utils/getMarkersWithMeasures";
+import { getMinutes, getSeconds } from "lib/getMinutesSeconds";
+import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
 
 interface MarkerListProps {
   markers: Marker[];

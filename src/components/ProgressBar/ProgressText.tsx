@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@mui/material";
-import { getMinutesSeconds } from "utils/getMinutesSeconds";
+import { getMinutesSeconds } from "lib/getMinutesSeconds";
 
 interface ProgressTextProps {
   duration: number;

@@ -2,7 +2,7 @@ import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
 import type { FileExporter } from "..";
 
 export const jsonExporter: FileExporter = {
-  fileType: "JSON",
+  fileType: "json",
   mimeType: "text/json",
   name: "JSON",
   stateToFile: async (state) => {

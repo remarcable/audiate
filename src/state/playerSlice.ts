@@ -57,6 +57,11 @@ export const playerSlice = createSlice({
       state.speed = action.payload;
     },
     openJumpToMeasureDialog: (state) => {
+      const time = state.progress * state.duration;
+      if (state.markers.find((marker) => marker.time === time)) {
+        return;
+      }
+
       state.wasPlayingBeforeJumpToMeasureDialogWasOpen = state.playing;
       state.playing = false;
       state.jumpToMeasureDialogIsOpen = true;

@@ -1,14 +1,17 @@
 import React, { useCallback, useRef } from "react";
 import ReactPlayer from "react-player";
+
 import { Box, Paper, Typography } from "@mui/material";
 
 import ProgressBar from "components/ProgressBar";
 import PlaybackMenu from "components/PlaybackMenu";
 import MarkerList from "components/MarkerList";
 
-import { playerActions, ExportFileType } from "state/playerSlice";
+import { playerActions } from "state/playerSlice";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 import { usePlayerHotkeys } from "hooks/usePlayerHotkeys";
+
+import type { ExportFileType } from "lib/fileExport";
 
 interface PlayerProps {
   file: {

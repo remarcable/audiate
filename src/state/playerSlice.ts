@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
 import { addMarker } from "./helpers";
+import type { AppDispatch, RootState } from "./store";
+import { type ExportFileType, exportFile } from "lib/fileExport";
 
 export interface PlayerState {
   playing: boolean;
@@ -22,9 +25,6 @@ export interface Marker {
 
 export const SPEED_OPTIONS = [0.5, 1, 1.5, 2] as const;
 export type SpeedOption = typeof SPEED_OPTIONS[number];
-
-export const EXPORT_OPTIONS = ["Text", "CSV", "MEI"] as const;
-export type ExportFileType = typeof EXPORT_OPTIONS[number];
 
 const initialState: PlayerState = {
   playing: false,
@@ -86,13 +86,14 @@ export const playerSlice = createSlice({
   },
 });
 
-const exportAsFile = createAsyncThunk(
-  "player/exportAsFile",
-  (fileType: ExportFileType, thunkAPI) => {
-    const state = thunkAPI.getState();
-    console.log(fileType, state);
-  }
-);
+const exportAsFile = createAsyncThunk<
+  void,
+  ExportFileType,
+  { dispatch: AppDispatch; state: RootState }
+>("player/exportAsFile", (fileType, thunkAPI) => {
+  const state = thunkAPI.getState();
+  exportFile({ fileType, state });
+});
 
 export const playerActions = { ...playerSlice.actions, exportAsFile };
 export default playerSlice.reducer;

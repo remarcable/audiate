@@ -5,12 +5,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import CreateJumpMarkerDialog from "./CreateJumpMarkerDialog";
 
-import {
-  SPEED_OPTIONS,
-  EXPORT_OPTIONS,
-  SpeedOption,
-  ExportFileType,
-} from "state/playerSlice";
+import { SPEED_OPTIONS, type SpeedOption } from "state/playerSlice";
+import { exportOptions, type ExportFileType } from "lib/fileExport";
 
 interface PlaybackMenuProps {
   speed: number;
@@ -58,7 +54,7 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
   };
 
   const makeExportButtonHandleClose =
-    (exportAs: FileTExportFileTypeype | null) => () => {
+    (exportAs: ExportFileType | null) => () => {
       if (exportAs) {
         exportAsFile(exportAs);
       }
@@ -109,7 +105,7 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
           onClose={makeExportButtonHandleClose(null)}
           anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
         >
-          {EXPORT_OPTIONS.map((exportOption) => (
+          {exportOptions.map((exportOption) => (
             <MenuItem
               sx={{ minWidth: 110 }}
               key={exportOption}

@@ -9,6 +9,7 @@ export interface PlayerState {
   progress: number;
   duration: number;
   speed: SpeedOption;
+  wasPlayingBeforeJumpToMeasureDialogWasOpen: boolean;
   jumpToMeasureDialogIsOpen: boolean;
   markers: Marker[];
 }
@@ -28,6 +29,7 @@ export type SpeedOption = typeof SPEED_OPTIONS[number];
 
 const initialState: PlayerState = {
   playing: false,
+  wasPlayingBeforeJumpToMeasureDialogWasOpen: false,
   progress: 0,
   duration: 0,
   speed: 1,
@@ -55,6 +57,7 @@ export const playerSlice = createSlice({
       state.speed = action.payload;
     },
     openJumpToMeasureDialog: (state) => {
+      state.wasPlayingBeforeJumpToMeasureDialogWasOpen = state.playing;
       state.playing = false;
       state.jumpToMeasureDialogIsOpen = true;
     },
@@ -62,7 +65,7 @@ export const playerSlice = createSlice({
       addMarker(state, { type: MarkerType.Measure });
     },
     handleJumpMarkerDialogClose: (state, action) => {
-      state.playing = true;
+      state.playing = state.wasPlayingBeforeJumpToMeasureDialogWasOpen;
       state.jumpToMeasureDialogIsOpen = false;
 
       const jumpToMeasure: number | null = action.payload;
@@ -90,9 +93,9 @@ const exportAsFile = createAsyncThunk<
   void,
   ExportFileType,
   { dispatch: AppDispatch; state: RootState }
->("player/exportAsFile", (fileType, thunkAPI) => {
+>("player/exportAsFile", async (fileType, thunkAPI) => {
   const state = thunkAPI.getState();
-  exportFile({ fileType, state });
+  await exportFile({ fileType, state });
 });
 
 export const playerActions = { ...playerSlice.actions, exportAsFile };

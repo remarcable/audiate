@@ -1,31 +1,31 @@
 import { RootState } from "state/store";
 import FileSaver from "file-saver";
 
-export const fileExporters = [
-  {
-    fileType: "txt",
-    name: "Text",
-    stateToFile: (state: RootState): string => {
-      return "Text";
-    },
-  },
-  {
-    fileType: "csv",
-    name: "CSV",
-    stateToFile: (state: RootState): string => {
-      return "CSV";
-    },
-  },
-  {
-    fileType: "mei",
-    name: "MEI",
-    stateToFile: (state: RootState): string => {
-      return "MEI";
-    },
-  },
+import { textExporter } from "./exporters/text";
+import { meiExporter } from "./exporters/mei";
+import { csvExporter } from "./exporters/csv";
+import { jsonExporter } from "./exporters/json";
+
+export interface FileExporter {
+  fileType: string;
+  mimeType: string;
+  name: string;
+  stateToFile: (state: RootState) => Promise<string>;
+}
+export const fileExporters: readonly FileExporter[] = [
+  textExporter,
+  csvExporter,
+  jsonExporter,
+  // meiExporter,
 ] as const;
 
-export const exportFile = ({
+export const exportOptions = fileExporters.map((exporter) => exporter.fileType);
+export const exportNames = Object.fromEntries(
+  fileExporters.map((exporter) => [exporter.fileType, exporter.name])
+);
+export type ExportFileType = typeof exportOptions[number];
+
+export const exportFile = async ({
   fileType,
   state,
 }: {
@@ -36,14 +36,16 @@ export const exportFile = ({
   const exporter = fileExporters.find(
     (exporter) => exporter.fileType === fileType
   );
-  const fileContent = exporter?.stateToFile(state) as string;
+
+  if (!exporter) {
+    return;
+  }
+
+  const fileContent = await exporter.stateToFile(state);
 
   const file = new File([fileContent], fileName, {
-    type: "text/plain;charset=utf-8",
+    type: `${exporter.mimeType};charset=utf-8`,
   });
 
   FileSaver.saveAs(file);
 };
-
-export const exportOptions = fileExporters.map((option) => option.fileType);
-export type ExportFileType = typeof exportOptions[number];

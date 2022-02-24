@@ -5,14 +5,21 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import CreateJumpMarkerDialog from "./CreateJumpMarkerDialog";
 
-const SPEED_OPTIONS = [0.5, 1, 1.5, 2];
+import {
+  SPEED_OPTIONS,
+  EXPORT_OPTIONS,
+  SpeedOption,
+  ExportFileType,
+} from "state/playerSlice";
 
 interface PlaybackMenuProps {
   speed: number;
   playing: boolean;
   setPlaying: (playing: boolean) => void;
-  setSpeed: (speed: typeof SPEED_OPTIONS[number]) => void;
+  setSpeed: (speed: SpeedOption) => void;
   addMeasureMarker: () => void;
+
+  exportAsFile: (fileType: ExportFileType) => void;
 
   jumpToMeasureDialogIsOpen: boolean;
   openJumpToMeasureDialog: () => void;
@@ -24,23 +31,40 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
   setPlaying,
   setSpeed,
   addMeasureMarker,
+  exportAsFile,
   jumpToMeasureDialogIsOpen,
   openJumpToMeasureDialog,
   handleJumpMarkerDialogClose,
 }) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [speedAnchorEl, setSpeedAnchorEl] = useState<null | HTMLElement>(null);
+  const [exportAnchorEl, setExportAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
 
   const handleSpeedButtonClick = (e: MouseEvent<HTMLElement>) => {
-    setAnchorEl(e.currentTarget);
+    setSpeedAnchorEl(e.currentTarget);
   };
 
-  const makeSpeedButtonHandleClose = (speed: number | null) => () => {
+  const makeSpeedButtonHandleClose = (speed: SpeedOption | null) => () => {
     if (speed) {
       setSpeed(speed);
     }
 
-    setAnchorEl(null);
+    setSpeedAnchorEl(null);
   };
+
+  const handleExportButtonClick = (e: MouseEvent<HTMLElement>) => {
+    setExportAnchorEl(e.currentTarget);
+  };
+
+  const makeExportButtonHandleClose =
+    (exportAs: FileTExportFileTypeype | null) => () => {
+      if (exportAs) {
+        exportAsFile(exportAs);
+      }
+
+      setExportAnchorEl(null);
+    };
   return (
     <>
       <ButtonGroup sx={{ ml: 3 }}>
@@ -54,13 +78,13 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
           Speed
         </Button>
         <Menu
-          anchorEl={anchorEl}
-          open={!!anchorEl}
+          anchorEl={speedAnchorEl}
+          open={!!speedAnchorEl}
           onClose={makeSpeedButtonHandleClose(null)}
-          anchorOrigin={{ horizontal: 20, vertical: "bottom" }}
         >
           {SPEED_OPTIONS.map((speedMenuItem) => (
             <MenuItem
+              sx={{ minWidth: 100 }}
               key={speedMenuItem}
               selected={speed === speedMenuItem}
               onClick={makeSpeedButtonHandleClose(speedMenuItem)}
@@ -73,6 +97,28 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
         <Button onClick={() => openJumpToMeasureDialog()}>
           Set Jump Marker
         </Button>
+        <Button
+          onClick={handleExportButtonClick}
+          endIcon={<KeyboardArrowDownIcon />}
+        >
+          Export
+        </Button>
+        <Menu
+          anchorEl={exportAnchorEl}
+          open={!!exportAnchorEl}
+          onClose={makeExportButtonHandleClose(null)}
+          anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+        >
+          {EXPORT_OPTIONS.map((exportOption) => (
+            <MenuItem
+              sx={{ minWidth: 110 }}
+              key={exportOption}
+              onClick={makeExportButtonHandleClose(exportOption)}
+            >
+              {exportOption}
+            </MenuItem>
+          ))}
+        </Menu>
       </ButtonGroup>
       <CreateJumpMarkerDialog
         open={jumpToMeasureDialogIsOpen}

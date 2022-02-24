@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { WritableDraft } from "immer/dist/internal";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { addMarker } from "./helpers";
 
 export interface PlayerState {
   playing: boolean;
   progress: number;
   duration: number;
-  speed: number;
+  speed: SpeedOption;
   jumpToMeasureDialogIsOpen: boolean;
   markers: Marker[];
 }
@@ -19,6 +19,12 @@ export interface Marker {
   time: number;
   jumpToMeasure?: number;
 }
+
+export const SPEED_OPTIONS = [0.5, 1, 1.5, 2] as const;
+export type SpeedOption = typeof SPEED_OPTIONS[number];
+
+export const EXPORT_OPTIONS = ["Text", "CSV", "MEI"] as const;
+export type ExportFileType = typeof EXPORT_OPTIONS[number];
 
 const initialState: PlayerState = {
   playing: false,
@@ -73,21 +79,20 @@ export const playerSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(exportAsFile.fulfilled, () => {
+      return;
+    });
+  },
 });
 
-const addMarker = (
-  state: WritableDraft<PlayerState>,
-  marker: Pick<Marker, "type" | "jumpToMeasure">
-) => {
-  const { markers, progress, duration } = state;
-  const time = progress * duration;
+const exportAsFile = createAsyncThunk(
+  "player/exportAsFile",
+  (fileType: ExportFileType, thunkAPI) => {
+    const state = thunkAPI.getState();
+    console.log(fileType, state);
+  }
+);
 
-  if (markers.find((m) => m.time === time)) return;
-
-  // TODO: optimize
-  markers.push({ ...marker, time });
-  markers.sort((a, b) => a.time - b.time);
-};
-
-export const playerActions = playerSlice.actions;
+export const playerActions = { ...playerSlice.actions, exportAsFile };
 export default playerSlice.reducer;

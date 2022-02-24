@@ -6,7 +6,7 @@ import ProgressBar from "components/ProgressBar";
 import PlaybackMenu from "components/PlaybackMenu";
 import MarkerList from "components/MarkerList";
 
-import { playerActions } from "state/playerSlice";
+import { playerActions, ExportFileType } from "state/playerSlice";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 import { usePlayerHotkeys } from "hooks/usePlayerHotkeys";
 
@@ -17,6 +17,7 @@ interface PlayerProps {
     path: string;
   };
 }
+
 const Player: React.FC<PlayerProps> = ({ file }) => {
   const dispatch = useAppDispatch();
   const {
@@ -44,6 +45,8 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
     dispatch(playerActions.handleJumpMarkerDialogClose(jumpToMeasure));
   const removeMarker = (marker: number) =>
     dispatch(playerActions.removeMarker(marker));
+  const exportAsFile = (fileType: ExportFileType) =>
+    dispatch(playerActions.exportAsFile(fileType));
 
   const playerRef = useRef<ReactPlayer>(null);
 
@@ -78,6 +81,7 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
             jumpToMeasureDialogIsOpen={jumpToMeasureDialogIsOpen}
             openJumpToMeasureDialog={openJumpToMeasureDialog}
             handleJumpMarkerDialogClose={handleJumpMarkerDialogClose}
+            exportAsFile={exportAsFile}
           />
         </Box>
 

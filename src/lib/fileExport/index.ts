@@ -16,7 +16,7 @@ export const fileExporters: readonly FileExporter[] = [
   textExporter,
   csvExporter,
   jsonExporter,
-  // meiExporter,
+  meiExporter,
 ] as const;
 
 export const exportOptions = fileExporters.map((exporter) => exporter.fileType);

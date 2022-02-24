@@ -91,6 +91,9 @@ export const playerSlice = createSlice({
     builder.addCase(exportAsFile.fulfilled, () => {
       return;
     });
+    builder.addCase(exportAsFile.rejected, (_, payload) => {
+      console.error(payload.error);
+    });
   },
 });
 

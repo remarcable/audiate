@@ -12,18 +12,16 @@ import {
   TableRow,
 } from "@mui/material";
 
-import { Marker, MarkerType } from "state/playerSlice";
+import { MarkerType } from "state/playerSlice";
 import { getMinutes, getSeconds } from "lib/getMinutesSeconds";
-import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
+import { type ExtendedMarker } from "lib/getMarkersWithMeasures";
 
 interface MarkerListProps {
-  markers: Marker[];
+  markers: ExtendedMarker[];
   removeMarker: (markerId: number) => void;
 }
 
 const MarkerList: React.FC<MarkerListProps> = ({ markers, removeMarker }) => {
-  const markersWithMeasures = getMarkersWithMeasures(markers);
-
   return (
     <Box mt={3}>
       <TableContainer
@@ -41,7 +39,7 @@ const MarkerList: React.FC<MarkerListProps> = ({ markers, removeMarker }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {markersWithMeasures.reverse().map(({ time, measure, type }) => (
+            {markers.reverse().map(({ time, measure, type }) => (
               <TableRow
                 key={time}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

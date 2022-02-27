@@ -1,6 +1,6 @@
 import { Marker } from "state/playerSlice";
 
-type ExtendedMarker = Marker & { measure: number };
+export type ExtendedMarker = Marker & { measure: number };
 
 export const getMarkersWithMeasures = (markers: Marker[]) =>
   markers.reduce((akk, marker, i) => {

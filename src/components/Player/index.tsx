@@ -1,9 +1,7 @@
-import React, { useCallback, useRef } from "react";
-import ReactPlayer from "react-player";
+import React, { useCallback, useMemo, useRef } from "react";
 
 import { Box, Paper, Typography } from "@mui/material";
 
-import ProgressBar from "components/ProgressBar";
 import PlaybackMenu from "components/PlaybackMenu";
 import MarkerList from "components/MarkerList";
 
@@ -12,6 +10,8 @@ import { useAppDispatch, useAppSelector } from "state/hooks";
 import { usePlayerHotkeys } from "hooks/usePlayerHotkeys";
 
 import type { ExportFileType } from "lib/fileExport";
+import Waveform from "components/ProgressBar/Waveform";
+import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
 
 interface PlayerProps {
   file: {
@@ -23,43 +23,69 @@ interface PlayerProps {
 
 const Player: React.FC<PlayerProps> = ({ file }) => {
   const dispatch = useAppDispatch();
-  const {
-    playing,
-    progress,
-    duration,
-    speed,
-    jumpToMeasureDialogIsOpen,
-    markers,
-  } = useAppSelector((state) => state.player);
+  const { playing, time, duration, speed, jumpToMeasureDialogIsOpen, markers } =
+    useAppSelector((state) => state.player);
   const { url: fileUrl, name: fileName } = file;
 
-  const setPlaying = (playing: boolean) =>
-    dispatch(playerActions.setPlaying(playing));
-  const togglePlaying = () => dispatch(playerActions.togglePlaying());
-  const setProgress = (progress: number) =>
-    dispatch(playerActions.setProgress(progress));
-  const setDuration = (duration: number) =>
-    dispatch(playerActions.setDuration(duration));
-  const setSpeed = (speed: number) => dispatch(playerActions.setSpeed(speed));
-  const addMeasureMarker = () => dispatch(playerActions.addMeasureMarker());
-  const openJumpToMeasureDialog = () =>
-    dispatch(playerActions.openJumpToMeasureDialog());
-  const handleJumpMarkerDialogClose = (jumpToMeasure: number | null) =>
-    dispatch(playerActions.handleJumpMarkerDialogClose(jumpToMeasure));
-  const removeMarker = (marker: number) =>
-    dispatch(playerActions.removeMarker(marker));
-  const exportAsFile = (fileType: ExportFileType) =>
-    dispatch(playerActions.exportAsFile(fileType));
+  const setPlaying = useCallback(
+    (playing: boolean) => dispatch(playerActions.setPlaying(playing)),
+    [dispatch]
+  );
+  const togglePlaying = useCallback(
+    () => dispatch(playerActions.togglePlaying()),
+    [dispatch]
+  );
+  const setTime = useCallback(
+    (time: number) => dispatch(playerActions.setTime(time)),
+    [dispatch]
+  );
+  const setProgress = useCallback(
+    (progress: number) => dispatch(playerActions.setProgress(progress)),
+    [dispatch]
+  );
+  const setDuration = useCallback(
+    (duration: number) => dispatch(playerActions.setDuration(duration)),
+    [dispatch]
+  );
+  const setSpeed = useCallback(
+    (speed: number) => dispatch(playerActions.setSpeed(speed)),
+    [dispatch]
+  );
+  const addMeasureMarker = useCallback(
+    () => dispatch(playerActions.addMeasureMarker()),
+    [dispatch]
+  );
+  const openJumpToMeasureDialog = useCallback(
+    () => dispatch(playerActions.openJumpToMeasureDialog()),
+    [dispatch]
+  );
+  const handleJumpMarkerDialogClose = useCallback(
+    (jumpToMeasure: number | null) =>
+      dispatch(playerActions.handleJumpMarkerDialogClose(jumpToMeasure)),
+    [dispatch]
+  );
+  const removeMarker = useCallback(
+    (marker: number) => dispatch(playerActions.removeMarker(marker)),
+    [dispatch]
+  );
+  const exportAsFile = useCallback(
+    (fileType: ExportFileType) =>
+      dispatch(playerActions.exportAsFile(fileType)),
+    [dispatch]
+  );
 
-  const playerRef = useRef<ReactPlayer>(null);
+  const markersWithMeasures = useMemo(
+    () => getMarkersWithMeasures(markers),
+    [markers]
+  );
 
+  const waveSurferRef = useRef(null);
   const relativeSeek = useCallback(
-    (seconds: number) => {
-      if (!jumpToMeasureDialogIsOpen) {
-        playerRef.current?.seekTo(progress * duration + seconds, "seconds");
-      }
+    (seekSeconds: number) => {
+      const nextProgress = (time + seekSeconds) / duration;
+      waveSurferRef.current.seekTo(nextProgress);
     },
-    [progress, duration, jumpToMeasureDialogIsOpen]
+    [time, duration]
   );
 
   usePlayerHotkeys({
@@ -88,31 +114,27 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
           />
         </Box>
 
-        <ReactPlayer
+        <Waveform
           url={fileUrl}
           playing={playing}
-          onPlay={() => setPlaying(true)}
-          onPause={() => setPlaying(false)}
-          onEnded={() => setPlaying(false)}
-          onProgress={({ played }) => setProgress(played)}
-          onDuration={(duration) => setDuration(duration)}
-          progressInterval={100}
-          width={0}
-          height={0}
-          controls
+          onPlay={useCallback(() => setPlaying(true), [setPlaying])}
+          onPause={useCallback(() => setPlaying(false), [setPlaying])}
+          onEnded={useCallback(() => setPlaying(false), [setPlaying])}
+          onTime={useCallback((time) => setTime(time), [setTime])}
+          onSeek={useCallback(
+            (progress) => setProgress(progress),
+            [setProgress]
+          )}
+          onDuration={useCallback(
+            (duration) => setDuration(duration),
+            [setDuration]
+          )}
           playbackRate={speed}
-          config={{ file: { forceAudio: true } }}
-          ref={playerRef}
-        />
-
-        <ProgressBar
-          progress={progress}
-          audioDuration={duration}
-          markers={markers}
-          onClick={(clickedAt) => playerRef.current?.seekTo(clickedAt)}
+          markers={markersWithMeasures}
+          waveSurferRef={waveSurferRef}
         />
       </Paper>
-      <MarkerList removeMarker={removeMarker} markers={markers} />
+      <MarkerList removeMarker={removeMarker} markers={markersWithMeasures} />
     </>
   );
 };

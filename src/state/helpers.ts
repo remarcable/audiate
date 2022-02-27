@@ -5,8 +5,7 @@ export const addMarker = (
   state: WritableDraft<PlayerState>,
   marker: Pick<Marker, "type" | "jumpToMeasure">
 ) => {
-  const { markers, progress, duration } = state;
-  const time = progress * duration;
+  const { markers, time } = state;
 
   if (markers.find((m) => m.time === time)) return;
 

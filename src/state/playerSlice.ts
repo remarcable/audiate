@@ -6,7 +6,7 @@ import { type ExportFileType, exportFile } from "lib/fileExport";
 
 export interface PlayerState {
   playing: boolean;
-  progress: number;
+  time: number;
   duration: number;
   speed: SpeedOption;
   wasPlayingBeforeJumpToMeasureDialogWasOpen: boolean;
@@ -30,7 +30,7 @@ export type SpeedOption = typeof SPEED_OPTIONS[number];
 const initialState: PlayerState = {
   playing: false,
   wasPlayingBeforeJumpToMeasureDialogWasOpen: false,
-  progress: 0,
+  time: 0,
   duration: 0,
   speed: 1,
   jumpToMeasureDialogIsOpen: false,
@@ -47,8 +47,11 @@ export const playerSlice = createSlice({
     togglePlaying: (state) => {
       state.playing = !state.playing;
     },
+    setTime: (state, action) => {
+      state.time = action.payload;
+    },
     setProgress: (state, action) => {
-      state.progress = action.payload;
+      state.time = action.payload * state.duration;
     },
     setDuration: (state, action) => {
       state.duration = action.payload;
@@ -57,7 +60,7 @@ export const playerSlice = createSlice({
       state.speed = action.payload;
     },
     openJumpToMeasureDialog: (state) => {
-      const time = state.progress * state.duration;
+      const { time } = state;
       if (state.markers.find((marker) => marker.time === time)) {
         return;
       }

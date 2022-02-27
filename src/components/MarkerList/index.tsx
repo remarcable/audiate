@@ -66,4 +66,4 @@ const MarkerList: React.FC<MarkerListProps> = ({ markers, removeMarker }) => {
   );
 };
 
-export default MarkerList;
+export default React.memo(MarkerList);

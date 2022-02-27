@@ -128,4 +128,4 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
   );
 };
 
-export default PlaybackMenu;
+export default React.memo(PlaybackMenu);

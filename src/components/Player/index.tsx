@@ -82,7 +82,9 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
   const waveSurferRef = useRef(null);
   const relativeSeek = useCallback(
     (seekSeconds: number) => {
-      const nextProgress = (time + seekSeconds) / duration;
+      const clamp = (lower, upper, value) =>
+        Math.min(upper, Math.max(lower, value));
+      const nextProgress = clamp(0, 1, (time + seekSeconds) / duration);
       waveSurferRef.current.seekTo(nextProgress);
     },
     [time, duration]

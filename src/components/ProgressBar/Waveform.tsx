@@ -14,6 +14,13 @@ interface WaveformProps {
   onTime: (time: number) => void;
   onSeek: (progress: number) => void;
   onDuration: (duration: number) => void;
+  updateMarkerTime: ({
+    oldMeasure,
+    newMarkerTime,
+  }: {
+    oldMeasure: number;
+    newMarkerTime: number;
+  }) => void;
   playbackRate: number;
   markers: ExtendedMarker[];
   waveSurferRef: RefObject<WaveSurfer>;
@@ -28,6 +35,7 @@ const Waveform: React.FC<WaveformProps> = ({
   onTime,
   onDuration,
   onSeek,
+  updateMarkerTime,
   playbackRate,
   markers,
   waveSurferRef,
@@ -66,7 +74,7 @@ const Waveform: React.FC<WaveformProps> = ({
 
   useEffect(() => {
     if (!waveSurferRef.current) return;
-    console.log();
+
     try {
       waveSurferRef.current?.setPlaybackRate?.(playbackRate);
     } catch (error) {
@@ -74,62 +82,47 @@ const Waveform: React.FC<WaveformProps> = ({
     }
   }, [playbackRate, loaded]);
 
-  const prevMarkersRef = useRef(markers);
   useEffect(() => {
     if (!waveSurferRef.current) return;
-    if (prevMarkersRef.current === markers) return;
-
-    const addedMarkers = markers.filter(
-      (marker) => !prevMarkersRef.current.includes(marker)
-    );
-    const removedMarkers = prevMarkersRef.current.filter(
-      (marker) => !markers.includes(marker)
-    );
 
     try {
-      removedMarkers.forEach((marker) => {
-        const markerIndex = prevMarkersRef.current.indexOf(marker);
-        waveSurferRef.current.markers.remove(markerIndex);
-      });
-
-      addedMarkers.forEach(({ time, measure, type }) => {
+      waveSurferRef.current.markers.clear();
+      markers.forEach(({ time, measure, type }) => {
         waveSurferRef.current.addMarker({
+          oldTime: time,
           time,
           label: measure,
           color: type === MarkerType.Jump ? "orange" : "blue",
           position: "top",
+          draggable: true,
         });
       });
     } catch (error) {
       console.log(error);
     }
-
-    prevMarkersRef.current = markers;
   }, [markers, loaded]);
 
   useEffect(() => {
     if (!waveSurferRef.current) return;
 
-    const play = () => onPlay();
-    const pause = () => onPause();
-    const finish = () => onEnded();
-    const audioprocess = (time: number) => onTime(time);
-    const seek = (progress: number) => onSeek(progress);
-
-    waveSurferRef.current?.on("play", play);
-    waveSurferRef.current?.on("pause", pause);
-    waveSurferRef.current?.on("finish", finish);
-    waveSurferRef.current?.on("audioprocess", audioprocess);
-    waveSurferRef.current?.on("seek", seek);
+    waveSurferRef.current?.on("play", () => onPlay());
+    waveSurferRef.current?.on("pause", () => onPause());
+    waveSurferRef.current?.on("finish", () => onEnded());
+    waveSurferRef.current?.on("audioprocess", (time: number) => onTime(time));
+    waveSurferRef.current?.on("seek", (progress: number) => onSeek(progress));
+    waveSurferRef.current?.on("marker-drop", (marker) =>
+      updateMarkerTime({ oldMeasure: marker.label, newMarkerTime: marker.time })
+    );
 
     return () => {
-      waveSurferRef.current?.un("play", play);
-      waveSurferRef.current?.un("pause", pause);
-      waveSurferRef.current?.un("finish", finish);
-      waveSurferRef.current?.un("audioprocess", audioprocess);
-      waveSurferRef.current?.un("seek", seek);
+      waveSurferRef.current?.un("play");
+      waveSurferRef.current?.un("pause");
+      waveSurferRef.current?.un("finish");
+      waveSurferRef.current?.un("audioprocess");
+      waveSurferRef.current?.un("seek");
+      waveSurferRef.current?.un("marker-drop");
     };
-  }, [onPlay, onPause, onEnded, onTime, onSeek, loaded]);
+  }, [onPlay, onPause, onEnded, onTime, updateMarkerTime, onSeek, loaded]);
 
   return (
     <Box mt={5} mb={5}>
@@ -179,7 +172,13 @@ const useWavesurfer = ({
               container: timelineContainerRef.current,
             }),
             MarkerPlugin.create({
-              markers: [],
+              markers: [
+                {
+                  // BUG: when this isn't set, any marker added with `addMarker`
+                  // will not be draggable
+                  draggable: true,
+                },
+              ],
             }),
           ],
         });

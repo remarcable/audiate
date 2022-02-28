@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "state/hooks";
 import { usePlayerHotkeys } from "hooks/usePlayerHotkeys";
 
 import type { ExportFileType } from "lib/fileExport";
-import Waveform from "components/ProgressBar/Waveform";
+import Waveform from "components/Waveform";
 import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
 
 interface PlayerProps {
@@ -62,6 +62,11 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
   const handleJumpMarkerDialogClose = useCallback(
     (jumpToMeasure: number | null) =>
       dispatch(playerActions.handleJumpMarkerDialogClose(jumpToMeasure)),
+    [dispatch]
+  );
+  const updateMarkerTime = useCallback(
+    ({ oldMeasure, newMarkerTime }) =>
+      dispatch(playerActions.updateMarkerTime({ oldMeasure, newMarkerTime })),
     [dispatch]
   );
   const removeMarker = useCallback(
@@ -123,6 +128,11 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
           onPause={useCallback(() => setPlaying(false), [setPlaying])}
           onEnded={useCallback(() => setPlaying(false), [setPlaying])}
           onTime={useCallback((time) => setTime(time), [setTime])}
+          updateMarkerTime={useCallback(
+            ({ oldMeasure, newMarkerTime }) =>
+              updateMarkerTime({ oldMeasure, newMarkerTime }),
+            [updateMarkerTime]
+          )}
           onSeek={useCallback(
             (progress) => setProgress(progress),
             [setProgress]

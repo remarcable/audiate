@@ -14,9 +14,14 @@ export interface PlayerState {
   time: number;
   duration: number;
   speed: SpeedOption;
-  wasPlayingBeforeJumpToMeasureDialogWasOpen: boolean;
-  jumpToMeasureDialogIsOpen: boolean;
+  wasPlayingBeforeDialogWasOpen: boolean;
+  dialogOpen: DialogType | null;
   markers: Marker[];
+}
+
+export enum DialogType {
+  Help = "HELP",
+  JumpToMeasure = "JUMP_TO_MEASURE",
 }
 
 export enum MarkerType {
@@ -35,11 +40,11 @@ export type SpeedOption = typeof SPEED_OPTIONS[number];
 
 const initialState: PlayerState = {
   playing: false,
-  wasPlayingBeforeJumpToMeasureDialogWasOpen: false,
+  wasPlayingBeforeDialogWasOpen: false,
   time: 0,
   duration: 0,
   speed: 1,
-  jumpToMeasureDialogIsOpen: false,
+  dialogOpen: null,
   markers: [],
 };
 
@@ -71,21 +76,30 @@ export const playerSlice = createSlice({
         return;
       }
 
-      state.wasPlayingBeforeJumpToMeasureDialogWasOpen = state.playing;
+      state.wasPlayingBeforeDialogWasOpen = state.playing;
       state.playing = false;
-      state.jumpToMeasureDialogIsOpen = true;
-    },
-    addMeasureMarker: (state) => {
-      addMarker(state, { type: MarkerType.Measure });
+      state.dialogOpen = DialogType.JumpToMeasure;
     },
     handleJumpMarkerDialogClose: (state, action) => {
-      state.playing = state.wasPlayingBeforeJumpToMeasureDialogWasOpen;
-      state.jumpToMeasureDialogIsOpen = false;
+      state.playing = state.wasPlayingBeforeDialogWasOpen;
+      state.dialogOpen = null;
 
       const jumpToMeasure: number | null = action.payload;
       if (jumpToMeasure) {
         addMarker(state, { type: MarkerType.Jump, jumpToMeasure });
       }
+    },
+    openHelpDialog: (state) => {
+      state.wasPlayingBeforeDialogWasOpen = state.playing;
+      state.playing = false;
+      state.dialogOpen = DialogType.Help;
+    },
+    closeHelpDialog: (state) => {
+      state.playing = state.wasPlayingBeforeDialogWasOpen;
+      state.dialogOpen = null;
+    },
+    addMeasureMarker: (state) => {
+      addMarker(state, { type: MarkerType.Measure });
     },
     updateMarkerTime: (state, action) => {
       const { markers } = state;

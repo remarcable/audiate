@@ -1,16 +1,18 @@
 import React, { useCallback } from "react";
 
-import { Button, ButtonGroup, Menu, MenuItem } from "@mui/material";
+import { Button, ButtonGroup, IconButton, Menu, MenuItem } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import { useAppDispatch, useAppSelector } from "state/hooks";
 
 import CreateJumpMarkerDialog from "./CreateJumpMarkerDialog";
+import HelpDialog from "./HelpDialog";
 
 import {
   SPEED_OPTIONS,
   type SpeedOption,
   playerActions,
+  DialogType,
 } from "state/playerSlice";
 import {
   exportNames,
@@ -18,10 +20,11 @@ import {
   type ExportFileType,
 } from "lib/fileExport";
 import { useAnchorElement } from "hooks/useAnchorElement";
+import { Delete, Help } from "@mui/icons-material";
 
 const PlaybackMenu: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { playing, speed, jumpToMeasureDialogIsOpen } = useAppSelector(
+  const { playing, speed, dialogOpen } = useAppSelector(
     (state) => state.player
   );
 
@@ -41,9 +44,17 @@ const PlaybackMenu: React.FC = () => {
     () => dispatch(playerActions.openJumpToMeasureDialog()),
     [dispatch]
   );
+  const openHelpDialog = useCallback(
+    () => dispatch(playerActions.openHelpDialog()),
+    [dispatch]
+  );
   const handleJumpMarkerDialogClose = useCallback(
     (jumpToMeasure: number | null) =>
       dispatch(playerActions.handleJumpMarkerDialogClose(jumpToMeasure)),
+    [dispatch]
+  );
+  const handleHelpDialogClose = useCallback(
+    () => dispatch(playerActions.closeHelpDialog()),
     [dispatch]
   );
   const exportAsFile = useCallback(
@@ -87,7 +98,7 @@ const PlaybackMenu: React.FC = () => {
         </Menu>
         <Button onClick={() => addMeasureMarker()}>Set Marker</Button>
         <Button onClick={() => openJumpToMeasureDialog()}>
-          Set Jump Marker
+          Add Jump Marker
         </Button>
         <Button
           onClick={handleExportButtonClick}
@@ -112,9 +123,20 @@ const PlaybackMenu: React.FC = () => {
           ))}
         </Menu>
       </ButtonGroup>
+      <IconButton
+        sx={{ ml: 2 }}
+        color="primary"
+        onClick={() => openHelpDialog()}
+      >
+        <Help />
+      </IconButton>
       <CreateJumpMarkerDialog
-        open={jumpToMeasureDialogIsOpen}
+        open={dialogOpen === DialogType.JumpToMeasure}
         handleClose={handleJumpMarkerDialogClose}
+      />
+      <HelpDialog
+        open={dialogOpen === DialogType.Help}
+        handleClose={handleHelpDialogClose}
       />
     </>
   );

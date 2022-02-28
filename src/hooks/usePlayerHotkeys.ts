@@ -1,13 +1,13 @@
 import { useHotkeys } from "react-hotkeys-hook";
 
 export const usePlayerHotkeys = ({
-  jumpToMeasureDialogIsOpen,
+  dialogIsOpen,
   togglePlaying,
   addMeasureMarker,
   openJumpToMeasureDialog,
   relativeSeek,
 }: {
-  jumpToMeasureDialogIsOpen: boolean;
+  dialogIsOpen: boolean;
   togglePlaying: () => void;
   addMeasureMarker: () => void;
   openJumpToMeasureDialog: () => void;
@@ -16,22 +16,22 @@ export const usePlayerHotkeys = ({
   useHotkeys(
     "k",
     () => {
-      if (!jumpToMeasureDialogIsOpen) {
+      if (!dialogIsOpen) {
         togglePlaying();
       }
     },
-    [jumpToMeasureDialogIsOpen, togglePlaying]
+    [dialogIsOpen, togglePlaying]
   );
 
   useHotkeys(
     "space",
     (e) => {
-      if (!jumpToMeasureDialogIsOpen) {
+      if (!dialogIsOpen) {
         e.preventDefault();
         addMeasureMarker();
       }
     },
-    [jumpToMeasureDialogIsOpen, addMeasureMarker]
+    [dialogIsOpen, addMeasureMarker]
   );
 
   useHotkeys(

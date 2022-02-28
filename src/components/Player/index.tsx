@@ -14,9 +14,7 @@ import Waveform from "components/Waveform";
 
 const Player: React.FC = () => {
   const dispatch = useAppDispatch();
-  const jumpToMeasureDialogIsOpen = useAppSelector(
-    (state) => state.player.jumpToMeasureDialogIsOpen
-  );
+  const dialogIsOpen = useAppSelector((state) => !!state.player.dialogOpen);
   const fileName = useAppSelector((state) => state.app.file.name);
 
   const togglePlaying = useCallback(
@@ -39,7 +37,7 @@ const Player: React.FC = () => {
   }, []);
 
   usePlayerHotkeys({
-    jumpToMeasureDialogIsOpen,
+    dialogIsOpen,
     togglePlaying,
     addMeasureMarker,
     openJumpToMeasureDialog,

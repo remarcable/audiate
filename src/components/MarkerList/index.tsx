@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
+import { createSelector } from "@reduxjs/toolkit";
 
 import {
   Box,
@@ -15,19 +16,21 @@ import {
 import { getMinutes, getSeconds } from "lib/getMinutesSeconds";
 import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
 
+import { RootState } from "state/store";
 import { MarkerType, playerActions } from "state/playerSlice";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 
+const selectMarkersWithMeasures = createSelector(
+  (state: RootState) => state.player.markers,
+  (markers) => getMarkersWithMeasures(markers).reverse()
+);
+
 const MarkerList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { markers } = useAppSelector((state) => state.player);
-  const markersWithMeasures = useMemo(
-    () => getMarkersWithMeasures(markers).reverse(),
-    [markers]
-  );
+  const markersWithMeasures = useAppSelector(selectMarkersWithMeasures);
 
   const removeMarker = useCallback(
-    (marker: number) => dispatch(playerActions.removeMarker(marker)),
+    (markerTime: number) => dispatch(playerActions.removeMarker(markerTime)),
     [dispatch]
   );
 
@@ -48,25 +51,14 @@ const MarkerList: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {markersWithMeasures.map(({ time, measure, type }) => (
-              <TableRow
+            {markersWithMeasures.map(({ time, type, measure }) => (
+              <MemoizedRow
                 key={time}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                selected={type === MarkerType.Jump}
-              >
-                <TableCell component="th" scope="row">
-                  {measure}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {type}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {getMinutes(time)}:{getSeconds(time)} ({time.toFixed(3)}s)
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <Button onClick={() => removeMarker(time)}>Remove</Button>
-                </TableCell>
-              </TableRow>
+                time={time}
+                type={type}
+                measure={measure}
+                removeMarker={removeMarker}
+              />
             ))}
           </TableBody>
         </Table>
@@ -74,5 +66,40 @@ const MarkerList: React.FC = () => {
     </Box>
   );
 };
+
+const Row = ({
+  time,
+  type,
+  measure,
+  removeMarker,
+}: {
+  time: number;
+  type: MarkerType;
+  measure: number;
+  removeMarker: (marker: number) => void;
+}) => {
+  return (
+    <TableRow
+      key={time}
+      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+      selected={type === MarkerType.Jump}
+    >
+      <TableCell component="th" scope="row">
+        {measure}
+      </TableCell>
+      <TableCell component="th" scope="row">
+        {type}
+      </TableCell>
+      <TableCell component="th" scope="row">
+        {getMinutes(time)}:{getSeconds(time)} ({time.toFixed(3)}s)
+      </TableCell>
+      <TableCell component="th" scope="row">
+        <Button onClick={() => removeMarker(time)}>Remove</Button>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+const MemoizedRow = React.memo(Row);
 
 export default React.memo(MarkerList);

@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import { Button, ButtonGroup, Menu, MenuItem } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
+import { useAppDispatch, useAppSelector } from "state/hooks";
+
 import CreateJumpMarkerDialog from "./CreateJumpMarkerDialog";
 
-import { SPEED_OPTIONS, type SpeedOption } from "state/playerSlice";
+import {
+  SPEED_OPTIONS,
+  type SpeedOption,
+  playerActions,
+} from "state/playerSlice";
 import {
   exportNames,
   exportOptions,
@@ -13,31 +19,39 @@ import {
 } from "lib/fileExport";
 import { useAnchorElement } from "hooks/useAnchorElement";
 
-interface PlaybackMenuProps {
-  speed: number;
-  playing: boolean;
-  setPlaying: (playing: boolean) => void;
-  setSpeed: (speed: SpeedOption) => void;
-  addMeasureMarker: () => void;
+const PlaybackMenu: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { playing, speed, jumpToMeasureDialogIsOpen } = useAppSelector(
+    (state) => state.player
+  );
 
-  exportAsFile: (fileType: ExportFileType) => void;
+  const setPlaying = useCallback(
+    (playing: boolean) => dispatch(playerActions.setPlaying(playing)),
+    [dispatch]
+  );
+  const setSpeed = useCallback(
+    (speed: number) => dispatch(playerActions.setSpeed(speed)),
+    [dispatch]
+  );
+  const addMeasureMarker = useCallback(
+    () => dispatch(playerActions.addMeasureMarker()),
+    [dispatch]
+  );
+  const openJumpToMeasureDialog = useCallback(
+    () => dispatch(playerActions.openJumpToMeasureDialog()),
+    [dispatch]
+  );
+  const handleJumpMarkerDialogClose = useCallback(
+    (jumpToMeasure: number | null) =>
+      dispatch(playerActions.handleJumpMarkerDialogClose(jumpToMeasure)),
+    [dispatch]
+  );
+  const exportAsFile = useCallback(
+    (fileType: ExportFileType) =>
+      dispatch(playerActions.exportAsFile(fileType)),
+    [dispatch]
+  );
 
-  jumpToMeasureDialogIsOpen: boolean;
-  openJumpToMeasureDialog: () => void;
-  handleJumpMarkerDialogClose: (jumpToMeasure: number | null) => void;
-}
-
-const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
-  speed,
-  playing,
-  setPlaying,
-  setSpeed,
-  addMeasureMarker,
-  exportAsFile,
-  jumpToMeasureDialogIsOpen,
-  openJumpToMeasureDialog,
-  handleJumpMarkerDialogClose,
-}) => {
   const [speedAnchorEl, handleSpeedButtonClick, handleSpeedMenuClose] =
     useAnchorElement<SpeedOption>(setSpeed);
   const [exportAnchorEl, handleExportButtonClick, handleExportMenuClose] =

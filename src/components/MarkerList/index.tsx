@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 
 import {
   Box,
@@ -12,16 +12,25 @@ import {
   TableRow,
 } from "@mui/material";
 
-import { MarkerType } from "state/playerSlice";
 import { getMinutes, getSeconds } from "lib/getMinutesSeconds";
-import { type ExtendedMarker } from "lib/getMarkersWithMeasures";
+import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
 
-interface MarkerListProps {
-  markers: ExtendedMarker[];
-  removeMarker: (markerId: number) => void;
-}
+import { MarkerType, playerActions } from "state/playerSlice";
+import { useAppDispatch, useAppSelector } from "state/hooks";
 
-const MarkerList: React.FC<MarkerListProps> = ({ markers, removeMarker }) => {
+const MarkerList: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { markers } = useAppSelector((state) => state.player);
+  const markersWithMeasures = useMemo(
+    () => getMarkersWithMeasures(markers).reverse(),
+    [markers]
+  );
+
+  const removeMarker = useCallback(
+    (marker: number) => dispatch(playerActions.removeMarker(marker)),
+    [dispatch]
+  );
+
   return (
     <Box mt={3}>
       <TableContainer
@@ -39,7 +48,7 @@ const MarkerList: React.FC<MarkerListProps> = ({ markers, removeMarker }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {markers.reverse().map(({ time, measure, type }) => (
+            {markersWithMeasures.map(({ time, measure, type }) => (
               <TableRow
                 key={time}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

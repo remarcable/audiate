@@ -1,97 +1,72 @@
-import React, { useRef, useCallback, RefObject } from "react";
+import React, { useCallback, RefObject, useMemo } from "react";
 
-import { Box } from "@mui/material";
-import { type ExtendedMarker } from "lib/getMarkersWithMeasures";
-import {
-  useWaveSurfer,
-  usePlayPause,
-  useSetPlaybackRate,
-  useMarkers,
-  useSurferEvent,
-} from "./hooks";
+import { useAppDispatch, useAppSelector } from "state/hooks";
+import { playerActions } from "state/playerSlice";
+
+import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
+
+import Wavesurfer from "./Wavesurfer";
 
 interface WaveformProps {
-  url: string;
-  playing: boolean;
-  onPlay: () => void;
-  onPause: () => void;
-  onEnded: () => void;
-  onTime: (time: number) => void;
-  onSeek: (progress: number) => void;
-  onDuration: (duration: number) => void;
-  updateMarkerTime: ({
-    oldMeasure,
-    newMarkerTime,
-  }: {
-    oldMeasure: number;
-    newMarkerTime: number;
-  }) => void;
-  playbackRate: number;
-  markers: ExtendedMarker[];
   waveSurferRef: RefObject<WaveSurfer>;
 }
 
-const Waveform: React.FC<WaveformProps> = ({
-  url,
-  playing,
-  onPlay,
-  onPause,
-  onEnded,
-  onTime,
-  onDuration,
-  onSeek,
-  updateMarkerTime,
-  playbackRate,
-  markers,
-  waveSurferRef,
-}) => {
-  const waveContainerRef = useRef<HTMLDivElement>(null);
-  const timelineContainerRef = useRef<HTMLDivElement>(null);
+const Waveform: React.FC<WaveformProps> = ({ waveSurferRef }) => {
+  const dispatch = useAppDispatch();
+  const { playing, speed, markers } = useAppSelector((state) => state.player);
+  const fileUrl = useAppSelector((state) => state.app.file.url);
 
-  useWaveSurfer({
-    waveSurferRef,
-    waveContainerRef,
-    timelineContainerRef,
-    onDuration,
-    url,
-  });
-
-  usePlayPause({ waveSurferRef, playing });
-  useSetPlaybackRate({ waveSurferRef, playbackRate });
-  useMarkers({ waveSurferRef, markers });
-
-  const onMarkerDrop = useCallback(
-    (marker) =>
-      updateMarkerTime({
-        oldMeasure: marker.label,
-        newMarkerTime: marker.time,
-      }),
-    [updateMarkerTime]
+  const setPlaying = useCallback(
+    (playing: boolean) => dispatch(playerActions.setPlaying(playing)),
+    [dispatch]
   );
 
-  useSurferEvent(waveSurferRef, "play", onPlay);
-  useSurferEvent(waveSurferRef, "pause", onPause);
-  useSurferEvent(waveSurferRef, "finish", onEnded);
-  useSurferEvent(waveSurferRef, "audioprocess", onTime);
-  useSurferEvent(waveSurferRef, "seek", onSeek);
-  useSurferEvent(waveSurferRef, "marker-drop", onMarkerDrop);
+  const setTime = useCallback(
+    (time: number) => dispatch(playerActions.setTime(time)),
+    [dispatch]
+  );
+  const setProgress = useCallback(
+    (progress: number) => dispatch(playerActions.setProgress(progress)),
+    [dispatch]
+  );
+  const setDuration = useCallback(
+    (duration: number) => dispatch(playerActions.setDuration(duration)),
+    [dispatch]
+  );
+
+  const updateMarkerTime = useCallback(
+    ({ oldMeasure, newMarkerTime }) =>
+      dispatch(playerActions.updateMarkerTime({ oldMeasure, newMarkerTime })),
+    [dispatch]
+  );
+
+  const markersWithMeasures = useMemo(
+    () => getMarkersWithMeasures(markers),
+    [markers]
+  );
 
   return (
-    <Box mt={5} mb={5}>
-      <Box
-        ref={waveContainerRef}
-        sx={{
-          // TODO: Test this on Windows as well!
-          "& wave::-webkit-scrollbar": {
-            display: "none",
-          },
-          "& wave": {
-            scrollbarWidth: "none",
-          },
-        }}
-      />
-      <Box ref={timelineContainerRef} />
-    </Box>
+    <Wavesurfer
+      url={fileUrl}
+      playing={playing}
+      onPlay={useCallback(() => setPlaying(true), [setPlaying])}
+      onPause={useCallback(() => setPlaying(false), [setPlaying])}
+      onEnded={useCallback(() => setPlaying(false), [setPlaying])}
+      onTime={useCallback((time) => setTime(time), [setTime])}
+      updateMarkerTime={useCallback(
+        ({ oldMeasure, newMarkerTime }) =>
+          updateMarkerTime({ oldMeasure, newMarkerTime }),
+        [updateMarkerTime]
+      )}
+      onSeek={useCallback((progress) => setProgress(progress), [setProgress])}
+      onDuration={useCallback(
+        (duration) => setDuration(duration),
+        [setDuration]
+      )}
+      playbackRate={speed}
+      markers={markersWithMeasures}
+      waveSurferRef={waveSurferRef}
+    />
   );
 };
 

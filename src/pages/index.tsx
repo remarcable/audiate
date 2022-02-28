@@ -34,7 +34,7 @@ const Home: NextPage = () => {
             Audiate
           </Typography>
           {!file.hasFile && <Dropzone setFile={setFile} />}
-          {file.hasFile && <Player file={file} />}
+          {file.hasFile && <Player />}
         </Box>
       </Container>
     </>

@@ -26,9 +26,11 @@ export const useWaveSurfer = ({
 
       const { default: WaveSurfer } = await import("wavesurfer.js");
       const { default: MarkerPlugin } = await import(
+        // @ts-expect-error: Can't find types for the plugin
         "wavesurfer.js/dist/plugin/wavesurfer.markers"
       );
       const { default: TimelinePlugin } = await import(
+        // @ts-expect-error: Can't find types for the plugin
         "wavesurfer.js/dist/plugin/wavesurfer.timeline"
       );
 
@@ -157,5 +159,7 @@ export const useSurferEvent = (
       console.log("Unregister event handler", event);
       waveSurfer?.un(event, handler);
     };
-  }, [waveSurferRef, event, handler]);
+    // XXX: waveSurferRef.current is needed to register the event handlers
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [waveSurferRef, waveSurferRef.current, event, handler]);
 };

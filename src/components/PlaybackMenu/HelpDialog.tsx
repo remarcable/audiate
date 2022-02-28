@@ -48,7 +48,7 @@ const HelpDialog: React.FC<HelpDialogProps> = ({ open, handleClose }) => (
       </Table>
     </DialogContent>
     <DialogActions>
-      <Button onClick={handleClose}>Close</Button>
+      <Button onClick={handleClose}>Dismiss</Button>
     </DialogActions>
   </Dialog>
 );

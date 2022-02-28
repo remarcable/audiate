@@ -88,11 +88,14 @@ export const playerSlice = createSlice({
       const oldMarkerTime = extendedMarkers.find(
         (marker) => marker.measure === action.payload.oldMeasure
       )?.time;
-      const marker = markers.find((m) => m.time === oldMarkerTime) ?? {};
-      marker.time = action.payload.newMarkerTime;
+      const marker = markers.find((m) => m.time === oldMarkerTime);
 
-      // TODO: optimize
-      markers.sort((a, b) => a.time - b.time);
+      if (marker) {
+        marker.time = action.payload.newMarkerTime;
+
+        // TODO: optimize
+        markers.sort((a, b) => a.time - b.time);
+      }
     },
     removeMarker: (state, action) => {
       const { markers } = state;

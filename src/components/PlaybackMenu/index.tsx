@@ -1,4 +1,4 @@
-import React, { type MouseEvent, useState } from "react";
+import React from "react";
 
 import { Button, ButtonGroup, Menu, MenuItem } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -11,6 +11,7 @@ import {
   exportOptions,
   type ExportFileType,
 } from "lib/fileExport";
+import { useAnchorElement } from "hooks/useAnchorElement";
 
 interface PlaybackMenuProps {
   speed: number;
@@ -25,6 +26,7 @@ interface PlaybackMenuProps {
   openJumpToMeasureDialog: () => void;
   handleJumpMarkerDialogClose: (jumpToMeasure: number | null) => void;
 }
+
 const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
   speed,
   playing,
@@ -36,35 +38,11 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
   openJumpToMeasureDialog,
   handleJumpMarkerDialogClose,
 }) => {
-  const [speedAnchorEl, setSpeedAnchorEl] = useState<null | HTMLElement>(null);
-  const [exportAnchorEl, setExportAnchorEl] = useState<null | HTMLElement>(
-    null
-  );
+  const [speedAnchorEl, handleSpeedButtonClick, handleSpeedMenuClose] =
+    useAnchorElement<SpeedOption>(setSpeed);
+  const [exportAnchorEl, handleExportButtonClick, handleExportMenuClose] =
+    useAnchorElement<ExportFileType>(exportAsFile);
 
-  const handleSpeedButtonClick = (e: MouseEvent<HTMLElement>) => {
-    setSpeedAnchorEl(e.currentTarget);
-  };
-
-  const makeSpeedButtonHandleClose = (speed: SpeedOption | null) => () => {
-    if (speed) {
-      setSpeed(speed);
-    }
-
-    setSpeedAnchorEl(null);
-  };
-
-  const handleExportButtonClick = (e: MouseEvent<HTMLElement>) => {
-    setExportAnchorEl(e.currentTarget);
-  };
-
-  const makeExportButtonHandleClose =
-    (exportAs: ExportFileType | null) => () => {
-      if (exportAs) {
-        exportAsFile(exportAs);
-      }
-
-      setExportAnchorEl(null);
-    };
   return (
     <>
       <ButtonGroup sx={{ ml: 3 }}>
@@ -80,14 +58,14 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
         <Menu
           anchorEl={speedAnchorEl}
           open={!!speedAnchorEl}
-          onClose={makeSpeedButtonHandleClose(null)}
+          onClose={() => handleSpeedMenuClose(null)}
         >
           {SPEED_OPTIONS.map((speedMenuItem) => (
             <MenuItem
               sx={{ minWidth: 100 }}
               key={speedMenuItem}
               selected={speed === speedMenuItem}
-              onClick={makeSpeedButtonHandleClose(speedMenuItem)}
+              onClick={() => handleSpeedMenuClose(speedMenuItem)}
             >
               {speedMenuItem.toFixed(1)}x
             </MenuItem>
@@ -106,14 +84,14 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({
         <Menu
           anchorEl={exportAnchorEl}
           open={!!exportAnchorEl}
-          onClose={makeExportButtonHandleClose(null)}
+          onClose={() => handleExportMenuClose(null)}
           anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
         >
           {exportOptions.map((exportOption) => (
             <MenuItem
               sx={{ minWidth: 110 }}
               key={exportOption}
-              onClick={makeExportButtonHandleClose(exportOption)}
+              onClick={() => handleExportMenuClose(exportOption)}
             >
               {exportNames[exportOption]}
             </MenuItem>

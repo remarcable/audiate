@@ -12,6 +12,7 @@ import { usePlayerHotkeys } from "hooks/usePlayerHotkeys";
 import type { ExportFileType } from "lib/fileExport";
 import Waveform from "components/Waveform";
 import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
+import type WaveSurfer from "wavesurfer.js";
 
 interface PlayerProps {
   file: {
@@ -23,8 +24,9 @@ interface PlayerProps {
 
 const Player: React.FC<PlayerProps> = ({ file }) => {
   const dispatch = useAppDispatch();
-  const { playing, time, duration, speed, jumpToMeasureDialogIsOpen, markers } =
-    useAppSelector((state) => state.player);
+  const { playing, speed, jumpToMeasureDialogIsOpen, markers } = useAppSelector(
+    (state) => state.player
+  );
   const { url: fileUrl, name: fileName } = file;
 
   const setPlaying = useCallback(
@@ -84,16 +86,11 @@ const Player: React.FC<PlayerProps> = ({ file }) => {
     [markers]
   );
 
-  const waveSurferRef = useRef(null);
-  const relativeSeek = useCallback(
-    (seekSeconds: number) => {
-      const clamp = (lower, upper, value) =>
-        Math.min(upper, Math.max(lower, value));
-      const nextProgress = clamp(0, 1, (time + seekSeconds) / duration);
-      waveSurferRef.current.seekTo(nextProgress);
-    },
-    [time, duration]
-  );
+  const waveSurferRef = useRef<WaveSurfer>(null);
+  const relativeSeek = useCallback((seekSeconds: number) => {
+    if (!waveSurferRef.current) return;
+    waveSurferRef.current.skip(seekSeconds);
+  }, []);
 
   usePlayerHotkeys({
     jumpToMeasureDialogIsOpen,

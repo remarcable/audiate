@@ -199,14 +199,10 @@ export const useSurferEvent = (
   useEffect(() => {
     if (!waveSurferRef.current) return;
     const waveSurfer = waveSurferRef.current;
-
-    console.log("Register event handler", event);
     waveSurfer.on(event, handler);
 
     return () => {
       if (!waveSurfer) return;
-
-      console.log("Unregister event handler", event);
       waveSurfer?.un(event, handler);
     };
     // XXX: waveSurferRef.current is needed to register the event handlers

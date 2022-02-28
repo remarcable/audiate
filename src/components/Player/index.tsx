@@ -14,7 +14,9 @@ import Waveform from "components/Waveform";
 
 const Player: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { jumpToMeasureDialogIsOpen } = useAppSelector((state) => state.player);
+  const jumpToMeasureDialogIsOpen = useAppSelector(
+    (state) => state.player.jumpToMeasureDialogIsOpen
+  );
   const fileName = useAppSelector((state) => state.app.file.name);
 
   const togglePlaying = useCallback(

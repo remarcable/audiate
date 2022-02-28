@@ -1,4 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 
 import { addMarker } from "./helpers";
 import type { AppDispatch, RootState } from "./store";
@@ -124,6 +128,11 @@ const exportAsFile = createAsyncThunk<
   const state = thunkAPI.getState();
   await exportFile({ fileType, state });
 });
+
+export const selectMarkersWithMeasures = createSelector(
+  (state: RootState) => state.player.markers,
+  (markers) => getMarkersWithMeasures(markers).reverse()
+);
 
 export const playerActions = { ...playerSlice.actions, exportAsFile };
 export default playerSlice.reducer;

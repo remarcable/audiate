@@ -1,9 +1,7 @@
-import React, { useCallback, RefObject, useMemo } from "react";
+import React, { useCallback, RefObject } from "react";
 
 import { useAppDispatch, useAppSelector } from "state/hooks";
-import { playerActions } from "state/playerSlice";
-
-import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
+import { playerActions, selectMarkersWithMeasures } from "state/playerSlice";
 
 import Wavesurfer from "./Wavesurfer";
 
@@ -13,8 +11,9 @@ interface WaveformProps {
 
 const Waveform: React.FC<WaveformProps> = ({ waveSurferRef }) => {
   const dispatch = useAppDispatch();
-  const { playing, speed, markers } = useAppSelector((state) => state.player);
+  const { playing, speed } = useAppSelector((state) => state.player);
   const fileUrl = useAppSelector((state) => state.app.file.url);
+  const markersWithMeasures = useAppSelector(selectMarkersWithMeasures);
 
   const setPlaying = useCallback(
     (playing: boolean) => dispatch(playerActions.setPlaying(playing)),
@@ -38,11 +37,6 @@ const Waveform: React.FC<WaveformProps> = ({ waveSurferRef }) => {
     ({ oldMeasure, newMarkerTime }) =>
       dispatch(playerActions.updateMarkerTime({ oldMeasure, newMarkerTime })),
     [dispatch]
-  );
-
-  const markersWithMeasures = useMemo(
-    () => getMarkersWithMeasures(markers),
-    [markers]
   );
 
   return (

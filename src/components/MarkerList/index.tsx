@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { createSelector } from "@reduxjs/toolkit";
 
 import {
   Box,
@@ -14,16 +13,13 @@ import {
 } from "@mui/material";
 
 import { getMinutes, getSeconds } from "lib/getMinutesSeconds";
-import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
 
-import { RootState } from "state/store";
-import { MarkerType, playerActions } from "state/playerSlice";
+import {
+  MarkerType,
+  playerActions,
+  selectMarkersWithMeasures,
+} from "state/playerSlice";
 import { useAppDispatch, useAppSelector } from "state/hooks";
-
-const selectMarkersWithMeasures = createSelector(
-  (state: RootState) => state.player.markers,
-  (markers) => getMarkersWithMeasures(markers).reverse()
-);
 
 const MarkerList: React.FC = () => {
   const dispatch = useAppDispatch();

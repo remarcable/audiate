@@ -20,10 +20,10 @@ interface WavesurferProps {
   onSeek: (progress: number) => void;
   onDuration: (duration: number) => void;
   updateMarkerTime: ({
-    oldMeasure,
+    markerId,
     newMarkerTime,
   }: {
-    oldMeasure: number;
+    markerId: string;
     newMarkerTime: number;
   }) => void;
   playbackRate: number;
@@ -72,11 +72,14 @@ const Wavesurfer: React.FC<WavesurferProps> = ({
   useMarkers({ waveSurferRef, markers, colors });
 
   const onMarkerDrop = useCallback(
-    (marker) =>
+    (marker) => {
+      const markerId = marker.el.getAttribute("data-marker-id");
+
       updateMarkerTime({
-        oldMeasure: marker.label,
+        markerId,
         newMarkerTime: marker.time,
-      }),
+      });
+    },
     [updateMarkerTime]
   );
 

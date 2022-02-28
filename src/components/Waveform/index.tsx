@@ -48,8 +48,8 @@ const Waveform: React.FC<WaveformProps> = ({ waveSurferRef }) => {
   );
 
   const updateMarkerTime = useCallback(
-    ({ oldMeasure, newMarkerTime }) =>
-      dispatch(playerActions.updateMarkerTime({ oldMeasure, newMarkerTime })),
+    ({ markerId, newMarkerTime }) =>
+      dispatch(playerActions.updateMarkerTime({ markerId, newMarkerTime })),
     [dispatch]
   );
 
@@ -61,11 +61,7 @@ const Waveform: React.FC<WaveformProps> = ({ waveSurferRef }) => {
       onPause={useCallback(() => setPlaying(false), [setPlaying])}
       onEnded={useCallback(() => setPlaying(false), [setPlaying])}
       onTime={useCallback((time) => setTime(time), [setTime])}
-      updateMarkerTime={useCallback(
-        ({ oldMeasure, newMarkerTime }) =>
-          updateMarkerTime({ oldMeasure, newMarkerTime }),
-        [updateMarkerTime]
-      )}
+      updateMarkerTime={updateMarkerTime}
       onSeek={useCallback((progress) => setProgress(progress), [setProgress])}
       onDuration={useCallback(
         (duration) => setDuration(duration),

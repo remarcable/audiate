@@ -160,7 +160,7 @@ export const useMarkers = ({
 
     try {
       waveSurferRef.current.markers.clear();
-      markers.forEach(({ time, measure, type }) => {
+      markers.forEach(({ time, measure, type, id }) => {
         const color =
           type === MarkerType.Jump ? colors.secondaryMain : colors.primaryMain;
 
@@ -174,6 +174,11 @@ export const useMarkers = ({
         });
 
         const { el: markerElement } = markerInstance;
+
+        // add ID to markerElement to make dragging the marker possible
+        // (without it there is no way to find out which marker was moved)
+        markerElement.setAttribute("data-marker-id", id);
+
         // Update object styles for the vertical line
         const verticalLine = markerElement.children[0];
         verticalLine.style.background = color;

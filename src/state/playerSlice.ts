@@ -27,6 +27,7 @@ export interface Marker {
   type: MarkerType;
   time: number;
   jumpToMeasure?: number;
+  id: string;
 }
 
 export const SPEED_OPTIONS = [0.5, 1, 1.5, 2] as const;
@@ -86,17 +87,9 @@ export const playerSlice = createSlice({
         addMarker(state, { type: MarkerType.Jump, jumpToMeasure });
       }
     },
-    // TODO: this doesn't work reliably yet.
-    // It is possible that two markers or more have the same measure
-    // number - possible with JUMP markers
-    // possible solution: store an ID in the HTML DOM element
     updateMarkerTime: (state, action) => {
       const { markers } = state;
-      const extendedMarkers = getMarkersWithMeasures(markers);
-      const oldMarkerTime = extendedMarkers.find(
-        (marker) => marker.measure === action.payload.oldMeasure
-      )?.time;
-      const marker = markers.find((m) => m.time === oldMarkerTime);
+      const marker = markers.find((m) => m.id === action.payload.markerId);
 
       if (marker) {
         marker.time = action.payload.newMarkerTime;

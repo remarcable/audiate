@@ -86,6 +86,10 @@ export const playerSlice = createSlice({
         addMarker(state, { type: MarkerType.Jump, jumpToMeasure });
       }
     },
+    // TODO: this doesn't work reliably yet.
+    // It is possible that two markers or more have the same measure
+    // number - possible with JUMP markers
+    // possible solution: store an ID in the HTML DOM element
     updateMarkerTime: (state, action) => {
       const { markers } = state;
       const extendedMarkers = getMarkersWithMeasures(markers);

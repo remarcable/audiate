@@ -11,6 +11,14 @@ interface UseWaveSurferHook {
   timelineContainerRef: RefObject<HTMLDivElement>;
   onDuration: (duration: number) => void;
   url: string;
+  colors: {
+    primaryMain?: string;
+    primaryDark?: string;
+    primaryLight?: string;
+    secondaryMain?: string;
+    textPrimary?: string;
+    textSecondary?: string;
+  };
 }
 
 export const useWaveSurfer = ({
@@ -19,6 +27,7 @@ export const useWaveSurfer = ({
   timelineContainerRef,
   onDuration,
   url,
+  colors,
 }: UseWaveSurferHook) =>
   useEffect(() => {
     const loadWavesurfer = async () => {
@@ -34,15 +43,25 @@ export const useWaveSurfer = ({
         "wavesurfer.js/dist/plugin/wavesurfer.timeline"
       );
 
+      // TODO: if there already is state (e.g. progress, playing, markers etc.)
+      // then run the methods to apply them
       const waveSurfer = WaveSurfer.create({
         container: waveContainerRef.current,
         scrollParent: true,
         backend: "MediaElement",
+        cursorColor: colors.textSecondary,
+        progressColor: colors.primaryDark,
+        waveColor: colors.primaryLight,
         plugins: [
           // BUG: when this isn't set, any marker added with `addMarker`
           // will not be draggable
           MarkerPlugin.create({ markers: [{ draggable: true }] }),
-          TimelinePlugin.create({ container: timelineContainerRef.current }),
+          TimelinePlugin.create({
+            container: timelineContainerRef.current,
+            fontFamily: "Roboto",
+            unlabeledNotchColor: colors.textSecondary,
+            secondaryFontColor: colors.textPrimary,
+          }),
         ],
       });
 
@@ -67,7 +86,14 @@ export const useWaveSurfer = ({
         waveSurferRef.current = null;
       }
     };
-  }, [waveSurferRef, timelineContainerRef, waveContainerRef, onDuration, url]);
+  }, [
+    waveSurferRef,
+    timelineContainerRef,
+    waveContainerRef,
+    onDuration,
+    colors,
+    url,
+  ]);
 
 export const usePlayPause = ({
   waveSurferRef,
@@ -116,9 +142,18 @@ export const useSetPlaybackRate = ({
 export const useMarkers = ({
   waveSurferRef,
   markers,
+  colors,
 }: {
   waveSurferRef: WaveSurferRef;
   markers: ExtendedMarker[];
+  colors: {
+    primaryMain?: string;
+    primaryDark?: string;
+    primaryLight?: string;
+    secondaryMain?: string;
+    textPrimary?: string;
+    textSecondary?: string;
+  };
 }) => {
   useEffect(() => {
     if (!waveSurferRef.current) return;
@@ -126,19 +161,34 @@ export const useMarkers = ({
     try {
       waveSurferRef.current.markers.clear();
       markers.forEach(({ time, measure, type }) => {
-        waveSurferRef.current?.addMarker({
+        const color =
+          type === MarkerType.Jump ? colors.secondaryMain : colors.primaryMain;
+
+        const markerInstance = waveSurferRef.current?.addMarker({
           oldTime: time,
           time,
           label: measure,
-          color: type === MarkerType.Jump ? "orange" : "blue",
+          color,
           position: "top",
           draggable: true,
         });
+
+        const { el: markerElement } = markerInstance;
+        // Update object styles for the vertical line
+        const verticalLine = markerElement.children[0];
+        verticalLine.style.background = color;
+        verticalLine.style.opacity = 0.5;
+
+        // Update object styles for the marker head
+        const markerHead = markerElement.children[1].children[1];
+        markerHead.style.fontFamily = "Roboto";
+        markerHead.style.fontSize = "80%";
+        markerHead.style.marginTop = "-4px";
       });
     } catch (error) {
       console.log(error);
     }
-  }, [waveSurferRef, markers]);
+  }, [waveSurferRef, markers, colors]);
 };
 
 export const useSurferEvent = (

@@ -29,6 +29,15 @@ interface WavesurferProps {
   playbackRate: number;
   markers: ExtendedMarker[];
   waveSurferRef: RefObject<WaveSurfer>;
+
+  colors: {
+    primaryMain?: string;
+    primaryDark?: string;
+    primaryLight?: string;
+    secondaryMain?: string;
+    textPrimary?: string;
+    textSecondary?: string;
+  };
 }
 
 const Wavesurfer: React.FC<WavesurferProps> = ({
@@ -44,6 +53,7 @@ const Wavesurfer: React.FC<WavesurferProps> = ({
   playbackRate,
   markers,
   waveSurferRef,
+  colors,
 }) => {
   const waveContainerRef = useRef<HTMLDivElement>(null);
   const timelineContainerRef = useRef<HTMLDivElement>(null);
@@ -52,13 +62,14 @@ const Wavesurfer: React.FC<WavesurferProps> = ({
     waveSurferRef,
     waveContainerRef,
     timelineContainerRef,
+    colors,
     onDuration,
     url,
   });
 
   usePlayPause({ waveSurferRef, playing });
   useSetPlaybackRate({ waveSurferRef, playbackRate });
-  useMarkers({ waveSurferRef, markers });
+  useMarkers({ waveSurferRef, markers, colors });
 
   const onMarkerDrop = useCallback(
     (marker) =>

@@ -1,4 +1,5 @@
-import React, { useCallback, RefObject } from "react";
+import React, { useCallback, RefObject, useMemo } from "react";
+import { useTheme } from "@mui/material";
 
 import { useAppDispatch, useAppSelector } from "state/hooks";
 import { playerActions, selectMarkersWithMeasures } from "state/playerSlice";
@@ -14,6 +15,19 @@ const Waveform: React.FC<WaveformProps> = ({ waveSurferRef }) => {
   const { playing, speed } = useAppSelector((state) => state.player);
   const fileUrl = useAppSelector((state) => state.app.file.url);
   const markersWithMeasures = useAppSelector(selectMarkersWithMeasures);
+
+  const theme = useTheme();
+  const colors = useMemo(
+    () => ({
+      primaryMain: theme.palette.primary.main,
+      primaryDark: theme.palette.primary.dark,
+      primaryLight: theme.palette.primary.light,
+      secondaryMain: theme.palette.secondary.main,
+      textPrimary: theme.palette.text.primary,
+      textSecondary: theme.palette.text.secondary,
+    }),
+    [theme]
+  );
 
   const setPlaying = useCallback(
     (playing: boolean) => dispatch(playerActions.setPlaying(playing)),
@@ -60,6 +74,7 @@ const Waveform: React.FC<WaveformProps> = ({ waveSurferRef }) => {
       playbackRate={speed}
       markers={markersWithMeasures}
       waveSurferRef={waveSurferRef}
+      colors={colors}
     />
   );
 };

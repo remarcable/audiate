@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addMarker } from "./helpers";
 import type { AppDispatch, RootState } from "./store";
 import { type ExportFileType, exportFile } from "lib/fileExport";
+import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
 
 export interface PlayerState {
   playing: boolean;
@@ -80,6 +81,18 @@ export const playerSlice = createSlice({
       if (jumpToMeasure) {
         addMarker(state, { type: MarkerType.Jump, jumpToMeasure });
       }
+    },
+    updateMarkerTime: (state, action) => {
+      const { markers } = state;
+      const extendedMarkers = getMarkersWithMeasures(markers);
+      const oldMarkerTime = extendedMarkers.find(
+        (marker) => marker.measure === action.payload.oldMeasure
+      )?.time;
+      const marker = markers.find((m) => m.time === oldMarkerTime) ?? {};
+      marker.time = action.payload.newMarkerTime;
+
+      // TODO: optimize
+      markers.sort((a, b) => a.time - b.time);
     },
     removeMarker: (state, action) => {
       const { markers } = state;

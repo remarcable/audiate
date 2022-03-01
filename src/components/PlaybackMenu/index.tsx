@@ -1,28 +1,42 @@
 import React, { useCallback } from "react";
 
-import { Button, ButtonGroup, IconButton, Menu, MenuItem } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-
-import { useAppDispatch, useAppSelector } from "state/hooks";
-
-import CreateJumpMarkerDialog from "./CreateJumpMarkerDialog";
-import HelpDialog from "./HelpDialog";
+import {
+  Box,
+  Menu,
+  MenuItem,
+  Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import {
+  FlagOutlined,
+  Forward5Outlined,
+  PauseOutlined,
+  PlayArrowOutlined,
+  Replay5Outlined,
+  SpeedOutlined,
+  TourOutlined,
+} from "@mui/icons-material";
 
 import {
-  SPEED_OPTIONS,
   type SpeedOption,
+  SPEED_OPTIONS,
   playerActions,
   DialogType,
 } from "state/playerSlice";
-import {
-  exportNames,
-  exportOptions,
-  type ExportFileType,
-} from "lib/fileExport";
-import { useAnchorElement } from "hooks/useAnchorElement";
-import { Delete, Help } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "state/hooks";
 
-const PlaybackMenu: React.FC = () => {
+import { useAnchorElement } from "hooks/useAnchorElement";
+
+import CreateJumpMarkerDialog from "./CreateJumpMarkerDialog";
+
+interface PlaybackMenuProps {
+  relativeSeek: (seconds: number) => void;
+}
+
+const PlaybackMenu: React.FC<PlaybackMenuProps> = ({ relativeSeek }) => {
   const dispatch = useAppDispatch();
   const { playing, speed, dialogOpen } = useAppSelector(
     (state) => state.player
@@ -32,10 +46,14 @@ const PlaybackMenu: React.FC = () => {
     (playing: boolean) => dispatch(playerActions.setPlaying(playing)),
     [dispatch]
   );
+
   const setSpeed = useCallback(
     (speed: number) => dispatch(playerActions.setSpeed(speed)),
     [dispatch]
   );
+  const [speedAnchorEl, handleSpeedButtonClick, handleSpeedMenuClose] =
+    useAnchorElement<SpeedOption>(setSpeed);
+
   const addMeasureMarker = useCallback(
     () => dispatch(playerActions.addMeasureMarker()),
     [dispatch]
@@ -44,101 +62,83 @@ const PlaybackMenu: React.FC = () => {
     () => dispatch(playerActions.openJumpToMeasureDialog()),
     [dispatch]
   );
-  const openHelpDialog = useCallback(
-    () => dispatch(playerActions.openHelpDialog()),
-    [dispatch]
-  );
   const handleJumpMarkerDialogClose = useCallback(
     (jumpToMeasure: number | null) =>
       dispatch(playerActions.handleJumpMarkerDialogClose(jumpToMeasure)),
     [dispatch]
   );
-  const handleHelpDialogClose = useCallback(
-    () => dispatch(playerActions.closeHelpDialog()),
-    [dispatch]
-  );
-  const exportAsFile = useCallback(
-    (fileType: ExportFileType) =>
-      dispatch(playerActions.exportAsFile(fileType)),
-    [dispatch]
-  );
 
-  const [speedAnchorEl, handleSpeedButtonClick, handleSpeedMenuClose] =
-    useAnchorElement<SpeedOption>(setSpeed);
-  const [exportAnchorEl, handleExportButtonClick, handleExportMenuClose] =
-    useAnchorElement<ExportFileType>(exportAsFile);
+  const seekBackwards = useCallback(() => relativeSeek(-5), [relativeSeek]);
+  const seekForward = useCallback(() => relativeSeek(5), [relativeSeek]);
+
+  const theme = useTheme();
+  const useSmallToggleButtons = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <>
-      <ButtonGroup sx={{ ml: 3 }}>
-        <Button onClick={() => setPlaying(!playing)}>
-          {playing ? "Pause" : "Play"}
-        </Button>
-        <Button
-          onClick={handleSpeedButtonClick}
-          endIcon={<KeyboardArrowDownIcon />}
-        >
-          Speed
-        </Button>
-        <Menu
-          anchorEl={speedAnchorEl}
-          open={!!speedAnchorEl}
-          onClose={() => handleSpeedMenuClose(null)}
-        >
-          {SPEED_OPTIONS.map((speedMenuItem) => (
-            <MenuItem
-              sx={{ minWidth: 100 }}
-              key={speedMenuItem}
-              selected={speed === speedMenuItem}
-              onClick={() => handleSpeedMenuClose(speedMenuItem)}
-            >
-              {speedMenuItem.toFixed(1)}x
-            </MenuItem>
-          ))}
-        </Menu>
-        <Button onClick={() => addMeasureMarker()}>Set Marker</Button>
-        <Button onClick={() => openJumpToMeasureDialog()}>
-          Add Jump Marker
-        </Button>
-        <Button
-          onClick={handleExportButtonClick}
-          endIcon={<KeyboardArrowDownIcon />}
-        >
-          Export
-        </Button>
-        <Menu
-          anchorEl={exportAnchorEl}
-          open={!!exportAnchorEl}
-          onClose={() => handleExportMenuClose(null)}
-          anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
-        >
-          {exportOptions.map((exportOption) => (
-            <MenuItem
-              sx={{ minWidth: 110 }}
-              key={exportOption}
-              onClick={() => handleExportMenuClose(exportOption)}
-            >
-              {exportNames[exportOption]}
-            </MenuItem>
-          ))}
-        </Menu>
-      </ButtonGroup>
-      <IconButton
-        sx={{ ml: 2 }}
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <ToggleButtonGroup
+        aria-label="playback menu"
         color="primary"
-        onClick={() => openHelpDialog()}
+        size={useSmallToggleButtons ? "small" : "medium"}
       >
-        <Help />
-      </IconButton>
+        <Tooltip title="Rewind 5s" onClick={seekBackwards}>
+          <ToggleButton value="speed">
+            <Replay5Outlined />
+          </ToggleButton>
+        </Tooltip>
+        <Tooltip title={playing ? "Pause" : "Play"}>
+          <ToggleButton value="playing" onClick={() => setPlaying(!playing)}>
+            {playing ? <PauseOutlined /> : <PlayArrowOutlined />}
+          </ToggleButton>
+        </Tooltip>
+        <Tooltip title="Fast forward 5s">
+          <ToggleButton value="speed" onClick={seekForward}>
+            <Forward5Outlined />
+          </ToggleButton>
+        </Tooltip>
+      </ToggleButtonGroup>
+      <ToggleButtonGroup
+        aria-label="playback options"
+        sx={{ ml: 2 }}
+        size={useSmallToggleButtons ? "small" : "medium"}
+      >
+        <Tooltip title="Change playback speed">
+          <ToggleButton value="speed" onClick={handleSpeedButtonClick}>
+            <SpeedOutlined />
+          </ToggleButton>
+        </Tooltip>
+        <Tooltip title="Set Marker" onClick={addMeasureMarker}>
+          <ToggleButton value="marker">
+            <FlagOutlined />
+          </ToggleButton>
+        </Tooltip>
+        <Tooltip title="Set Jump Marker" onClick={openJumpToMeasureDialog}>
+          <ToggleButton value="jumpmarker">
+            <TourOutlined />
+          </ToggleButton>
+        </Tooltip>
+      </ToggleButtonGroup>
+      <Menu
+        anchorEl={speedAnchorEl}
+        open={!!speedAnchorEl}
+        onClose={() => handleSpeedMenuClose(null)}
+        anchorOrigin={{ horizontal: -8, vertical: "bottom" }}
+      >
+        {SPEED_OPTIONS.map((speedMenuItem) => (
+          <MenuItem
+            key={speedMenuItem}
+            selected={speed === speedMenuItem}
+            onClick={() => handleSpeedMenuClose(speedMenuItem)}
+          >
+            {speedMenuItem.toFixed(1)}x
+          </MenuItem>
+        ))}
+      </Menu>
       <CreateJumpMarkerDialog
         open={dialogOpen === DialogType.JumpToMeasure}
         handleClose={handleJumpMarkerDialogClose}
       />
-      <HelpDialog
-        open={dialogOpen === DialogType.Help}
-        handleClose={handleHelpDialogClose}
-      />
-    </>
+    </Box>
   );
 };
 

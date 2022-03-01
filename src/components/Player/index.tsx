@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import type WaveSurfer from "wavesurfer.js";
 
-import { Box, Paper, Typography } from "@mui/material";
+import { Paper } from "@mui/material";
 
 import PlaybackMenu from "components/PlaybackMenu";
 import MarkerList from "components/MarkerList";
@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "state/hooks";
 import { usePlayerHotkeys } from "hooks/usePlayerHotkeys";
 
 import Waveform from "components/Waveform";
+import { FileInfo } from "components/FileInfo";
 
 const Player: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -47,12 +48,9 @@ const Player: React.FC = () => {
   return (
     <>
       <Paper sx={{ mt: 2, p: 2 }} variant="outlined">
-        <Box sx={{ display: "flex" }}>
-          <Typography variant="h6">{fileName}</Typography>
-          <PlaybackMenu />
-        </Box>
-
+        <FileInfo fileName={fileName} />
         <Waveform waveSurferRef={waveSurferRef} />
+        <PlaybackMenu relativeSeek={relativeSeek} />
       </Paper>
       <MarkerList />
     </>

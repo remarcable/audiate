@@ -1,7 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 
-import { Box, Container, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
 import Player from "components/Player";
 import Dropzone from "components/Dropzone";
@@ -15,6 +21,8 @@ const Home: NextPage = () => {
     dispatch(appActions.setFile(file));
   const file = useAppSelector((state) => state.app.file);
 
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <>
       <Head>
@@ -23,14 +31,13 @@ const Home: NextPage = () => {
         <base href="/audiate/" />
       </Head>
 
-      <Container
-        sx={{
-          pt: 10,
-          height: "100vh",
-        }}
-      >
+      <Container sx={{ pt: isSmall ? 4 : 10, height: "100vh" }}>
         <Box>
-          <Typography variant="h3" gutterBottom>
+          <Typography
+            variant={isSmall ? "h4" : "h3"}
+            component="h1"
+            gutterBottom
+          >
             Audiate
           </Typography>
           {!file.hasFile && <Dropzone setFile={setFile} />}

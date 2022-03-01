@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import type WaveSurfer from "wavesurfer.js";
 
-import { Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 
 import PlaybackMenu from "components/PlaybackMenu";
 import MarkerList from "components/MarkerList";
@@ -47,11 +47,27 @@ const Player: React.FC = () => {
 
   return (
     <>
-      <Paper sx={{ mt: 2, p: 2 }} variant="outlined">
-        <FileInfo fileName={fileName} />
-        <Waveform waveSurferRef={waveSurferRef} />
-        <PlaybackMenu relativeSeek={relativeSeek} />
-      </Paper>
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: (theme) => theme.zIndex?.appBar,
+        }}
+      >
+        {/* Hide the table behind the sticky Player using a Box with the 
+          backgroundColor: */}
+        <Box
+          sx={{
+            backgroundColor: (theme) => theme.palette.background.default,
+            height: (theme) => theme.spacing(2),
+          }}
+        ></Box>
+        <Paper variant="outlined" sx={{ p: 2 }}>
+          <FileInfo fileName={fileName} />
+          <Waveform waveSurferRef={waveSurferRef} />
+          <PlaybackMenu relativeSeek={relativeSeek} />
+        </Paper>
+      </Box>
       <MarkerList />
     </>
   );

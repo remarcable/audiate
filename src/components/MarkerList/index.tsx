@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 
 import {
   Box,
-  Button,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -10,7 +10,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
 } from "@mui/material";
+import {
+  DeleteOutlined,
+  FlagOutlined,
+  TourOutlined,
+} from "@mui/icons-material";
 
 import { getMinutes, getSeconds } from "lib/getMinutesSeconds";
 
@@ -31,19 +37,19 @@ const MarkerList: React.FC = () => {
   );
 
   return (
-    <Box mt={3}>
+    <Box mt={3} pb={5} sx={{ display: "flex", justifyContent: "center" }}>
       <TableContainer
         component={Paper}
         variant="outlined"
-        sx={{ maxHeight: "60vh", overflow: "scroll" }}
+        sx={{ width: "40%" }}
       >
-        <Table sx={{ minWidth: 650 }} stickyHeader>
-          <TableHead sx={{ width: "100%" }}>
+        <Table>
+          <TableHead>
             <TableRow>
-              <TableCell>Measure</TableCell>
-              <TableCell>Type</TableCell>
+              <TableCell sx={{ width: 20 }} />
               <TableCell>Time</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Measure</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -78,19 +84,31 @@ const Row = ({
     <TableRow
       key={time}
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-      selected={type === MarkerType.Jump}
+      hover
     >
+      <TableCell component="th" scope="row" sx={{ width: 20 }}>
+        {type === MarkerType.Jump && (
+          <Tooltip title="Jump Marker">
+            <TourOutlined color="secondary" />
+          </Tooltip>
+        )}
+        {type === MarkerType.Measure && (
+          <Tooltip title="Measure Marker">
+            <FlagOutlined color="primary" />
+          </Tooltip>
+        )}
+      </TableCell>
+      <TableCell component="th" scope="row">
+        {getMinutes(time)}:{getSeconds(time)}:
+        {((time % 1) * 100).toFixed(0).padEnd(2, "0")}
+      </TableCell>
       <TableCell component="th" scope="row">
         {measure}
       </TableCell>
       <TableCell component="th" scope="row">
-        {type}
-      </TableCell>
-      <TableCell component="th" scope="row">
-        {getMinutes(time)}:{getSeconds(time)} ({time.toFixed(3)}s)
-      </TableCell>
-      <TableCell component="th" scope="row">
-        <Button onClick={() => removeMarker(time)}>Remove</Button>
+        <IconButton onClick={() => removeMarker(time)}>
+          <DeleteOutlined />
+        </IconButton>
       </TableCell>
     </TableRow>
   );

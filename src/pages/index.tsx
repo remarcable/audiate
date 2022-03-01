@@ -31,13 +31,9 @@ const Home: NextPage = () => {
         <base href="/audiate/" />
       </Head>
 
-      <Container sx={{ pt: isSmall ? 4 : 10, height: "100vh" }}>
+      <Container sx={{ pt: isSmall ? 4 : 6, height: "100vh" }}>
         <Box>
-          <Typography
-            variant={isSmall ? "h4" : "h3"}
-            component="h1"
-            gutterBottom
-          >
+          <Typography variant={isSmall ? "h4" : "h3"} component="h1">
             Audiate
           </Typography>
           {!file.hasFile && <Dropzone setFile={setFile} />}

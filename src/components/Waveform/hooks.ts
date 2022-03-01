@@ -49,6 +49,7 @@ export const useWaveSurfer = ({
         container: waveContainerRef.current,
         scrollParent: true,
         backend: "MediaElement",
+        normalize: true,
         cursorColor: colors.textSecondary,
         progressColor: colors.primaryDark,
         waveColor: colors.primaryLight,
@@ -104,14 +105,18 @@ export const usePlayPause = ({
 }) => {
   const prevPlayRef = useRef(playing);
   useEffect(() => {
-    if (!waveSurferRef.current) return;
+    const waveSurfer = waveSurferRef.current;
+    if (!waveSurfer) return;
     if (prevPlayRef.current === playing) return;
 
+    const waveEl = waveSurfer.container.children[0];
     try {
       if (playing) {
-        waveSurferRef.current?.play();
+        waveSurfer.play();
+        waveEl.style.overflow = "hidden";
       } else {
-        waveSurferRef.current?.pause();
+        waveSurfer.pause();
+        waveEl.style.overflow = "auto hidden";
       }
     } catch (error) {
       console.log(error);

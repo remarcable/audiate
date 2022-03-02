@@ -42,6 +42,7 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({ relativeSeek }) => {
     (state) => state.player
   );
 
+  // TODO: this doesn't work in Safari iOS. We'd need to call `.play()` directly
   const setPlaying = useCallback(
     (playing: boolean) => dispatch(playerActions.setPlaying(playing)),
     [dispatch]
@@ -58,8 +59,8 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({ relativeSeek }) => {
     () => dispatch(playerActions.addMeasureMarker()),
     [dispatch]
   );
-  const openJumpMarkerDialog = useCallback(
-    () => dispatch(playerActions.openJumpMarkerDialog()),
+  const openJumpToMeasureDialog = useCallback(
+    () => dispatch(playerActions.openJumpToMeasureDialog()),
     [dispatch]
   );
   const handleJumpMarkerDialogClose = useCallback(
@@ -119,7 +120,7 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({ relativeSeek }) => {
             <FlagOutlined />
           </ToggleButton>
         </Tooltip>
-        <Tooltip title="Set Jump Marker" onClick={openJumpMarkerDialog}>
+        <Tooltip title="Set Jump Marker" onClick={openJumpToMeasureDialog}>
           <ToggleButton value="jumpmarker">
             <TourOutlined />
           </ToggleButton>

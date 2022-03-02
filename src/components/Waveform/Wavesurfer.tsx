@@ -1,6 +1,14 @@
-import React, { useRef, useCallback, RefObject } from "react";
+import React, {
+  useRef,
+  useCallback,
+  type RefObject,
+  useEffect,
+  useState,
+} from "react";
 
 import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { usePinch } from "@use-gesture/react";
+
 import { type ExtendedMarker } from "lib/getMarkersWithMeasures";
 import {
   useWaveSurfer,
@@ -66,6 +74,39 @@ const Wavesurfer: React.FC<WavesurferProps> = ({
     onDuration,
     url,
   });
+
+  const [zoomFactor, setZoomFactor] = useState(1);
+
+  useEffect(() => {
+    if (!waveSurferRef.current) return;
+
+    const initialPxPerSecond = 20;
+    waveSurferRef.current.zoom(initialPxPerSecond * zoomFactor);
+  }, [zoomFactor, waveSurferRef]);
+
+  usePinch(
+    ({ offset }) => {
+      const [actualOffset] = offset;
+      setZoomFactor(actualOffset);
+    },
+    {
+      target: waveContainerRef,
+      scaleBounds: { min: 0.1, max: 8 },
+      rubberband: false,
+    }
+  );
+
+  useEffect(() => {
+    const handler = (e: Event) => e.preventDefault();
+    document.addEventListener("gesturestart", handler);
+    document.addEventListener("gesturechange", handler);
+    document.addEventListener("gestureend", handler);
+    return () => {
+      document.removeEventListener("gesturestart", handler);
+      document.removeEventListener("gesturechange", handler);
+      document.removeEventListener("gestureend", handler);
+    };
+  }, []);
 
   usePlayPause({ waveSurferRef, playing });
   useSetPlaybackRate({ waveSurferRef, playbackRate });

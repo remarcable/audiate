@@ -17,6 +17,7 @@
     "@mui/icons-material": "^5.4.2",
     "@mui/material": "^5.4.2",
     "@reduxjs/toolkit": "^1.7.2",
+    "@use-gesture/react": "^10.2.7",
     "file-saver": "^2.0.5",
     "js2xmlparser": "^4.0.2",
     "just-debounce-it": "^3.0.1",

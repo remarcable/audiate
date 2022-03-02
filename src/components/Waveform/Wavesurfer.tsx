@@ -92,10 +92,8 @@ const Wavesurfer: React.FC<WavesurferProps> = ({
 
   const theme = useTheme();
   const isSmallVariant = useMediaQuery(theme.breakpoints.down("sm"));
-  const margin = isSmallVariant ? 2 : 5;
-
   return (
-    <Box mt={margin} mb={margin} sx={{ minHeight: 150 }}>
+    <Box my={isSmallVariant ? 2 : 5} sx={{ minHeight: 150 }}>
       <Box
         ref={waveContainerRef}
         sx={{

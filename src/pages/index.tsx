@@ -25,12 +25,7 @@ const Home: NextPage = () => {
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <>
-      <Head>
-        <title>Audiate</title>
-        <meta name="description" content="Annotate audio files with measures" />
-        <base href="/audiate/" />
-      </Head>
-
+      <AppHead />
       <Container sx={{ pt: isSmall ? 4 : 6, height: "100vh" }}>
         <Box>
           <Typography
@@ -47,5 +42,37 @@ const Home: NextPage = () => {
     </>
   );
 };
+
+const AppHead = () => (
+  <Head>
+    <title>Audiate</title>
+    <meta name="description" content="Annotate audio files with measures" />
+    <base href="/audiate/" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/audiate/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/audiate/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/audiate/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/audiate/site.webmanifest" />
+    <link
+      rel="mask-icon"
+      href="/audiate/safari-pinned-tab.svg"
+      color="#5483cc"
+    />
+    <link rel="shortcut icon" href="/audiate/favicon.ico" />
+  </Head>
+);
 
 export default Home;

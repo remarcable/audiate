@@ -36,6 +36,11 @@ const Player: React.FC = () => {
     if (!waveSurferRef.current) return;
     waveSurferRef.current.skip(seekSeconds);
   }, []);
+  const absoluteSeek = useCallback((seekSeconds: number) => {
+    const waveSurfer = waveSurferRef.current;
+    if (!waveSurfer) return;
+    waveSurfer.seekTo(seekSeconds / waveSurfer.getDuration());
+  }, []);
 
   usePlayerHotkeys({
     dialogIsOpen,
@@ -68,7 +73,7 @@ const Player: React.FC = () => {
           <PlaybackMenu relativeSeek={relativeSeek} />
         </Paper>
       </Box>
-      <MarkerList />
+      <MarkerList seekTo={absoluteSeek} />
     </>
   );
 };

@@ -27,7 +27,11 @@ import {
 } from "state/playerSlice";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 
-const MarkerList: React.FC = () => {
+interface MarkerListProps {
+  seekTo: (seconds: number) => void;
+}
+
+const MarkerList: React.FC<MarkerListProps> = ({ seekTo }) => {
   const dispatch = useAppDispatch();
   const markersWithMeasures = useAppSelector(selectMarkersWithMeasures);
 
@@ -37,7 +41,7 @@ const MarkerList: React.FC = () => {
   );
 
   return (
-    <Box mt={3} pb={5} sx={{ display: "flex", justifyContent: "center" }}>
+    <Box mt={3} pb={10} sx={{ display: "flex", justifyContent: "center" }}>
       <TableContainer
         component={Paper}
         variant="outlined"
@@ -59,6 +63,7 @@ const MarkerList: React.FC = () => {
                 time={time}
                 type={type}
                 measure={measure}
+                seekTo={seekTo}
                 removeMarker={removeMarker}
               />
             ))}
@@ -73,18 +78,24 @@ const Row = ({
   time,
   type,
   measure,
+  seekTo,
   removeMarker,
 }: {
   time: number;
   type: MarkerType;
   measure: number;
+  seekTo: (seconds: number) => void;
   removeMarker: (marker: number) => void;
 }) => {
   return (
     <TableRow
       key={time}
-      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+      sx={{
+        "&:last-child td, &:last-child th": { border: 0 },
+        cursor: "pointer",
+      }}
       hover
+      onClick={() => seekTo(time)}
     >
       <TableCell component="th" scope="row" sx={{ maxWidth: 20 }}>
         {type === MarkerType.Jump && (
@@ -105,7 +116,12 @@ const Row = ({
         {measure}
       </TableCell>
       <TableCell component="th" scope="row">
-        <IconButton onClick={() => removeMarker(time)}>
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            removeMarker(time);
+          }}
+        >
           <DeleteOutlined />
         </IconButton>
       </TableCell>

@@ -21,6 +21,14 @@ export const meiExporter: FileExporter = {
         xmlns: "http://www.music-encoding.org/ns/mei",
         "xml:id": replaceSpacesWithUnderscores(nameWithoutFileExtension),
       },
+      meiHead: {
+        fileDesc: {
+          titleStmt: {
+            title: nameWithoutFileExtension,
+          },
+          pubStmt: {},
+        },
+      },
       music: {
         performance: {
           recording: {
@@ -70,9 +78,25 @@ export const meiExporter: FileExporter = {
       },
     };
 
-    return js2xmlparser.parse("mei", resultObject, {
+    const resultString = js2xmlparser.parse("mei", resultObject, {
       declaration: { encoding: "UTF-8" },
       format: { doubleQuotes: true },
     });
+
+    // I didn't find a way to add the next line to the XML using the package,
+    // so I add it here manually:
+    const meiXmlModelLine =
+      '<?xml-model href="https://music-encoding.org/schema/4.0.1/mei-CMN.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>';
+
+    const resultStringLines = resultString.split("\n");
+    const resultStringWithModelLine = [
+      resultStringLines[0],
+      meiXmlModelLine,
+      resultStringLines.slice(1),
+    ]
+      .flat()
+      .join("\n");
+
+    return resultStringWithModelLine;
   },
 };

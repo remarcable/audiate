@@ -33,7 +33,11 @@ const Home: NextPage = () => {
 
       <Container sx={{ pt: isSmall ? 4 : 6, height: "100vh" }}>
         <Box>
-          <Typography variant={isSmall ? "h4" : "h3"} component="h1">
+          <Typography
+            variant={isSmall ? "h4" : "h3"}
+            component="h1"
+            gutterBottom={isSmall && !file.hasFile}
+          >
             Audiate
           </Typography>
           {!file.hasFile && <Dropzone setFile={setFile} />}

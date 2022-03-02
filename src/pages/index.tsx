@@ -27,7 +27,7 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>Audiate</title>
-        <meta name="description" content="Annotate audio files" />
+        <meta name="description" content="Annotate audio files with measures" />
         <base href="/audiate/" />
       </Head>
 

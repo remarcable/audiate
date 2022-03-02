@@ -1,0 +1,17 @@
+{
+  "name": "Audiate",
+  "short_name": "Audiate",
+  "icons": [
+    {
+      "src": "/audiate/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/audiate/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "display": "standalone"
+}

@@ -91,7 +91,7 @@ const Wavesurfer: React.FC<WavesurferProps> = ({
   useSurferEvent(waveSurferRef, "marker-drop", onMarkerDrop);
 
   return (
-    <Box mt={5} mb={5}>
+    <Box mt={5} mb={5} sx={{ minHeight: 150 }}>
       <Box
         ref={waveContainerRef}
         sx={{

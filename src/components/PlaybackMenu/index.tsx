@@ -59,8 +59,8 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({ relativeSeek }) => {
     () => dispatch(playerActions.addMeasureMarker()),
     [dispatch]
   );
-  const openJumpToMeasureDialog = useCallback(
-    () => dispatch(playerActions.openJumpToMeasureDialog()),
+  const openJumpMarkerDialog = useCallback(
+    () => dispatch(playerActions.openJumpMarkerDialog()),
     [dispatch]
   );
   const handleJumpMarkerDialogClose = useCallback(
@@ -120,7 +120,7 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({ relativeSeek }) => {
             <FlagOutlined />
           </ToggleButton>
         </Tooltip>
-        <Tooltip title="Set Jump Marker" onClick={openJumpToMeasureDialog}>
+        <Tooltip title="Set Jump Marker" onClick={openJumpMarkerDialog}>
           <ToggleButton value="jumpmarker">
             <TourOutlined />
           </ToggleButton>

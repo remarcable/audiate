@@ -26,8 +26,8 @@ const Player: React.FC = () => {
     () => dispatch(playerActions.addMeasureMarker()),
     [dispatch]
   );
-  const openJumpToMeasureDialog = useCallback(
-    () => dispatch(playerActions.openJumpToMeasureDialog()),
+  const openJumpMarkerDialog = useCallback(
+    () => dispatch(playerActions.openJumpMarkerDialog()),
     [dispatch]
   );
 
@@ -46,7 +46,7 @@ const Player: React.FC = () => {
     dialogIsOpen,
     togglePlaying,
     addMeasureMarker,
-    openJumpToMeasureDialog,
+    openJumpMarkerDialog,
     relativeSeek,
   });
 

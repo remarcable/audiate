@@ -4,13 +4,13 @@ export const usePlayerHotkeys = ({
   dialogIsOpen,
   togglePlaying,
   addMeasureMarker,
-  openJumpToMeasureDialog,
+  openJumpMarkerDialog,
   relativeSeek,
 }: {
   dialogIsOpen: boolean;
   togglePlaying: () => void;
   addMeasureMarker: () => void;
-  openJumpToMeasureDialog: () => void;
+  openJumpMarkerDialog: () => void;
   relativeSeek: (seconds: number) => void;
 }) => {
   useHotkeys(
@@ -38,9 +38,9 @@ export const usePlayerHotkeys = ({
     "shift+space",
     (e) => {
       e.preventDefault();
-      openJumpToMeasureDialog();
+      openJumpMarkerDialog();
     },
-    [openJumpToMeasureDialog]
+    [openJumpMarkerDialog]
   );
 
   useHotkeys("j", () => relativeSeek(-10), [relativeSeek]);

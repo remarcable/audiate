@@ -70,7 +70,7 @@ export const playerSlice = createSlice({
     setSpeed: (state, action) => {
       state.speed = action.payload;
     },
-    openJumpToMeasureDialog: (state) => {
+    openJumpMarkerDialog: (state) => {
       const { time } = state;
       if (state.markers.find((marker) => marker.time === time)) {
         return;
@@ -107,8 +107,6 @@ export const playerSlice = createSlice({
 
       if (marker) {
         marker.time = action.payload.newMarkerTime;
-
-        // TODO: optimize
         markers.sort((a, b) => a.time - b.time);
       }
     },

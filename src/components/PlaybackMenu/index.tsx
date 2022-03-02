@@ -12,10 +12,10 @@ import {
 } from "@mui/material";
 import {
   FlagOutlined,
-  Forward5Outlined,
+  Forward10Outlined,
   PauseOutlined,
   PlayArrowOutlined,
-  Replay5Outlined,
+  Replay10Outlined,
   SpeedOutlined,
   TourOutlined,
 } from "@mui/icons-material";
@@ -68,22 +68,29 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({ relativeSeek }) => {
     [dispatch]
   );
 
-  const seekBackwards = useCallback(() => relativeSeek(-5), [relativeSeek]);
-  const seekForward = useCallback(() => relativeSeek(5), [relativeSeek]);
+  const seekBackwards = useCallback(() => relativeSeek(-10), [relativeSeek]);
+  const seekForward = useCallback(() => relativeSeek(10), [relativeSeek]);
 
   const theme = useTheme();
-  const useSmallToggleButtons = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSmallVariant = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: isSmallVariant ? "column" : "row",
+      }}
+    >
       <ToggleButtonGroup
         aria-label="playback menu"
         color="primary"
-        size={useSmallToggleButtons ? "small" : "medium"}
+        size={isSmallVariant ? "large" : "medium"}
       >
-        <Tooltip title="Rewind 5s" onClick={seekBackwards}>
+        <Tooltip title="Rewind 10s" onClick={seekBackwards}>
           <ToggleButton value="speed">
-            <Replay5Outlined />
+            <Replay10Outlined />
           </ToggleButton>
         </Tooltip>
         <Tooltip title={playing ? "Pause" : "Play"}>
@@ -91,16 +98,16 @@ const PlaybackMenu: React.FC<PlaybackMenuProps> = ({ relativeSeek }) => {
             {playing ? <PauseOutlined /> : <PlayArrowOutlined />}
           </ToggleButton>
         </Tooltip>
-        <Tooltip title="Fast forward 5s">
+        <Tooltip title="Fast forward 10s">
           <ToggleButton value="speed" onClick={seekForward}>
-            <Forward5Outlined />
+            <Forward10Outlined />
           </ToggleButton>
         </Tooltip>
       </ToggleButtonGroup>
       <ToggleButtonGroup
         aria-label="playback options"
-        sx={{ ml: 2 }}
-        size={useSmallToggleButtons ? "small" : "medium"}
+        sx={{ [isSmallVariant ? "mt" : "ml"]: 2 }}
+        size={isSmallVariant ? "large" : "medium"}
       >
         <Tooltip title="Change playback speed">
           <ToggleButton value="speed" onClick={handleSpeedButtonClick}>

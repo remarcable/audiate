@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, RefObject } from "react";
 
-import { Box } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { type ExtendedMarker } from "lib/getMarkersWithMeasures";
 import {
   useWaveSurfer,
@@ -90,8 +90,12 @@ const Wavesurfer: React.FC<WavesurferProps> = ({
   useSurferEvent(waveSurferRef, "seek", onSeek);
   useSurferEvent(waveSurferRef, "marker-drop", onMarkerDrop);
 
+  const theme = useTheme();
+  const isSmallVariant = useMediaQuery(theme.breakpoints.down("sm"));
+  const margin = isSmallVariant ? 2 : 5;
+
   return (
-    <Box mt={5} mb={5} sx={{ minHeight: 150 }}>
+    <Box mt={margin} mb={margin} sx={{ minHeight: 150 }}>
       <Box
         ref={waveContainerRef}
         sx={{

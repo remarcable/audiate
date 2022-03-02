@@ -18,7 +18,7 @@ import {
   TourOutlined,
 } from "@mui/icons-material";
 
-import { getMinutes, getSeconds } from "lib/getMinutesSeconds";
+import { formatSeconds } from "lib/formatSeconds";
 
 import {
   MarkerType,
@@ -41,12 +41,12 @@ const MarkerList: React.FC = () => {
       <TableContainer
         component={Paper}
         variant="outlined"
-        sx={{ width: "40%" }}
+        sx={{ maxWidth: 500 }}
       >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ width: 20 }} />
+              <TableCell sx={{ maxWidth: 20 }} />
               <TableCell>Time</TableCell>
               <TableCell>Measure</TableCell>
               <TableCell></TableCell>
@@ -86,7 +86,7 @@ const Row = ({
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
       hover
     >
-      <TableCell component="th" scope="row" sx={{ width: 20 }}>
+      <TableCell component="th" scope="row" sx={{ maxWidth: 20 }}>
         {type === MarkerType.Jump && (
           <Tooltip title="Jump Marker">
             <TourOutlined color="secondary" />
@@ -99,8 +99,7 @@ const Row = ({
         )}
       </TableCell>
       <TableCell component="th" scope="row">
-        {getMinutes(time)}:{getSeconds(time)}:
-        {((time % 1) * 100).toFixed(0).padEnd(2, "0")}
+        {formatSeconds(time)}
       </TableCell>
       <TableCell component="th" scope="row">
         {measure}

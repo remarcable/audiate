@@ -36,7 +36,7 @@ const Home: NextPage = () => {
           <Typography
             variant={isSmall ? "h4" : "h3"}
             component="h1"
-            gutterBottom={isSmall && !file.hasFile}
+            gutterBottom={!file.hasFile}
           >
             Audiate
           </Typography>

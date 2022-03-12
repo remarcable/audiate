@@ -1,6 +1,14 @@
 {
   "name": "audiate",
-  "private": true,
+  "version": "0.2.0",
+  "description": "Annotate audio files with measures",
+  "homepage": "https://marcnitzsche.de/audiate/",
+  "keywords": [
+    "audio",
+    "music",
+    "annotation-tool"
+  ],
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export",

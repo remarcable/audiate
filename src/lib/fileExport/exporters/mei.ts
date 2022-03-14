@@ -1,4 +1,7 @@
-import { getMarkersWithMeasures } from "lib/getMarkersWithMeasures";
+import {
+  type ExtendedMarker,
+  getMarkersWithMeasures,
+} from "lib/getMarkersWithMeasures";
 import type { FileExporter } from "..";
 
 const replaceSpacesWithUnderscores = (string: string) =>
@@ -12,6 +15,7 @@ export const meiExporter: FileExporter = {
 
     const { markers, duration } = state.player;
     const extendedMarkers = getMarkersWithMeasures(markers);
+    const uniqueExtendedMarkers = getUniqueMarkers(extendedMarkers);
 
     const { name } = state.app.file;
     const nameWithoutFileExtension = name.split(".").slice(0, -1).join(".");
@@ -63,7 +67,8 @@ export const meiExporter: FileExporter = {
             },
             score: {
               section: {
-                measure: extendedMarkers.map((marker) => ({
+                // XXX Measures appear only once in <score>
+                measure: uniqueExtendedMarkers.map((marker) => ({
                   "@": {
                     "xml:id": replaceSpacesWithUnderscores(
                       `${nameWithoutFileExtension}_measure${marker.measure}`
@@ -99,4 +104,14 @@ export const meiExporter: FileExporter = {
 
     return resultStringWithModelLine;
   },
+};
+
+const getUniqueMarkers = (extendedMarkers: ExtendedMarker[]) => {
+  return extendedMarkers.reduce((acc, next) => {
+    const measureNumbers = acc.map((marker) => marker.measure);
+    if (measureNumbers.includes(next.measure)) {
+      return acc;
+    }
+    return [...acc, next];
+  }, [] as ExtendedMarker[]);
 };

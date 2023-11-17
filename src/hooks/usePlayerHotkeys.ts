@@ -5,13 +5,17 @@ export const usePlayerHotkeys = ({
   togglePlaying,
   addMeasureMarker,
   openJumpMarkerDialog,
+  removeCurrentMarker,
   relativeSeek,
+  absoluteSeek,
 }: {
   dialogIsOpen: boolean;
   togglePlaying: () => void;
   addMeasureMarker: () => void;
   openJumpMarkerDialog: () => void;
+  removeCurrentMarker: () => void;
   relativeSeek: (seconds: number) => void;
+  absoluteSeek: (seconds: number) => void;
 }) => {
   useHotkeys(
     "k",
@@ -43,8 +47,11 @@ export const usePlayerHotkeys = ({
     [openJumpMarkerDialog]
   );
 
+  useHotkeys("backspace", () => removeCurrentMarker(), [removeCurrentMarker]);
+
   useHotkeys("j", () => relativeSeek(-10), [relativeSeek]);
   useHotkeys("l", () => relativeSeek(+10), [relativeSeek]);
   useHotkeys("left", () => relativeSeek(-5), [relativeSeek]);
   useHotkeys("right", () => relativeSeek(+5), [relativeSeek]);
+  useHotkeys("enter", () => absoluteSeek(0), [absoluteSeek]);
 };

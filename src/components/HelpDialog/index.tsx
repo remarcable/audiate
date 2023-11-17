@@ -24,8 +24,10 @@ const SHORTCUTS = [
   { key: "l", action: "Rewind 10 seconds" },
   { key: "← (Left Arrow)", action: "Fast forward 5 seconds" },
   { key: "→ (Right Arrow)", action: "Rewind 5 seconds" },
-  { key: "Space", action: "Set Marker" },
-  { key: "Shift + Space", action: "Set Jump Marker" },
+  { key: "Enter", action: "Rewind to start" },
+  { key: "Backspace", action: "Remove selected marker" },
+  { key: "Space", action: "Set marker" },
+  { key: "Shift + Space", action: "Set jump marker" },
 ] as const;
 
 const HelpDialog: React.FC<HelpDialogProps> = ({ open, handleClose }) => {

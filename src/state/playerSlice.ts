@@ -118,6 +118,17 @@ export const playerSlice = createSlice({
         markers.splice(index, 1);
       }
     },
+    removeCurrentMarker: (state) => {
+      const { time, markers } = state;
+      const index = markers.findIndex(
+        (m) => time - 0.01 <= m.time && m.time <= time + 0.01
+      );
+      console.log(time, index);
+
+      if (index !== -1) {
+        markers.splice(index, 1);
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(exportAsFile.fulfilled, () => {

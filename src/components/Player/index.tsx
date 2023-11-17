@@ -26,6 +26,10 @@ const Player: React.FC = () => {
     () => dispatch(playerActions.addMeasureMarker()),
     [dispatch]
   );
+  const removeCurrentMarker = useCallback(
+    () => dispatch(playerActions.removeCurrentMarker()),
+    [dispatch]
+  );
   const openJumpMarkerDialog = useCallback(
     () => dispatch(playerActions.openJumpMarkerDialog()),
     [dispatch]
@@ -47,7 +51,9 @@ const Player: React.FC = () => {
     togglePlaying,
     addMeasureMarker,
     openJumpMarkerDialog,
+    removeCurrentMarker,
     relativeSeek,
+    absoluteSeek,
   });
 
   return (
